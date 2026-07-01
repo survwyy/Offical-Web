@@ -6,24 +6,26 @@
     <title>颗秒 OneTap - CS2 Desktop Assistant</title>
     <meta
       name="description"
-      content="颗秒是一款面向 CS2 玩家的桌面助手，支持 demo 复盘、个人皮肤与外设统计、职业选手配置查询、AI 教练和高光视频生成。"
+      content="颗秒是一款面向 CS2 玩家的桌面助手，支持 demo 复盘、个人数据与皮肤外设统计、职业选手皮肤和硬件查询、AI 教练与高光视频生成。"
     />
     <style>
       :root {
         color-scheme: dark;
         --bg: #030405;
-        --ink: #f7f8ef;
-        --muted: #aab0bd;
-        --dim: #69707d;
-        --line: rgba(255, 255, 255, 0.12);
+        --bg-2: #08090d;
+        --ink: #f6f7ef;
+        --muted: #a9b1bd;
+        --soft: #737b8b;
+        --line: rgba(255, 255, 255, 0.13);
         --line-soft: rgba(255, 255, 255, 0.07);
-        --panel: rgba(17, 18, 24, 0.82);
-        --panel-solid: #111218;
-        --lime: #c8ff2e;
-        --blue: #6fc7ff;
-        --amber: #ffb25d;
-        --rose: #ff6f8a;
-        --shadow: 0 34px 120px rgba(0, 0, 0, 0.58);
+        --panel: rgba(16, 17, 22, 0.84);
+        --panel-2: rgba(22, 23, 31, 0.74);
+        --lime: #c9ff2c;
+        --blue: #6cc8ff;
+        --amber: #ffb561;
+        --red: #ff5f64;
+        --violet: #9d7bff;
+        --shadow: 0 34px 120px rgba(0, 0, 0, 0.68);
         --radius: 8px;
         font-family:
           Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -32,6 +34,7 @@
 
       * {
         box-sizing: border-box;
+        letter-spacing: 0;
       }
 
       html {
@@ -44,12 +47,30 @@
         overflow-x: hidden;
         color: var(--ink);
         background:
-          linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-          linear-gradient(0deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px),
-          radial-gradient(circle at 76% 8%, rgba(111, 199, 255, 0.12), transparent 30rem),
-          radial-gradient(circle at 20% 54%, rgba(200, 255, 46, 0.07), transparent 28rem),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+          linear-gradient(120deg, rgba(108, 200, 255, 0.08), transparent 22rem),
+          linear-gradient(250deg, rgba(201, 255, 44, 0.055), transparent 24rem),
           var(--bg);
-        background-size: 80px 80px, 80px 80px, auto, auto, auto;
+        background-size: 72px 72px, 72px 72px, auto, auto, auto;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        pointer-events: none;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 18%),
+          repeating-linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.022) 0,
+            rgba(255, 255, 255, 0.022) 1px,
+            transparent 1px,
+            transparent 6px
+          );
+        opacity: 0.58;
       }
 
       a {
@@ -60,6 +81,11 @@
       img {
         display: block;
         max-width: 100%;
+      }
+
+      button,
+      input {
+        font: inherit;
       }
 
       .site {
@@ -73,11 +99,11 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 24px;
+        gap: 20px;
         height: 76px;
         padding: 0 clamp(18px, 4vw, 64px);
-        background: rgba(3, 4, 5, 0.82);
         border-bottom: 1px solid var(--line);
+        background: rgba(3, 4, 5, 0.84);
         backdrop-filter: blur(18px);
       }
 
@@ -101,10 +127,11 @@
 
       .brand strong {
         font-size: 15px;
+        line-height: 1;
       }
 
       .brand span {
-        margin-top: 3px;
+        margin-top: 5px;
         color: var(--muted);
         font-size: 11px;
         font-weight: 800;
@@ -118,7 +145,7 @@
         gap: 4px;
         padding: 5px;
         border: 1px solid var(--line);
-        background: rgba(255, 255, 255, 0.045);
+        background: rgba(255, 255, 255, 0.042);
       }
 
       .nav-links a,
@@ -134,137 +161,221 @@
       }
 
       .nav-links a {
-        padding: 10px 15px;
+        padding: 10px 14px;
       }
 
       .lang button {
-        min-width: 42px;
-        padding: 9px 10px;
+        padding: 9px 12px;
       }
 
       .nav-links a:hover,
+      .nav-links a:focus-visible,
       .lang button:hover,
-      .lang button.active {
+      .lang button.is-active {
         color: var(--ink);
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.09);
       }
 
       .nav-actions {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
       }
 
       .btn {
+        position: relative;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        min-height: 44px;
-        padding: 12px 18px;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        border-radius: 7px;
+        gap: 9px;
+        min-height: 45px;
+        padding: 0 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
         color: var(--ink);
-        background: rgba(255, 255, 255, 0.065);
+        background: rgba(255, 255, 255, 0.054);
         font-size: 14px;
         font-weight: 900;
-        white-space: nowrap;
-        transition: 160ms ease;
+        cursor: pointer;
+        overflow: hidden;
+        transition:
+          transform 180ms ease,
+          border-color 180ms ease,
+          background 180ms ease;
+      }
+
+      .btn::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+        transform: translateX(-120%);
+        transition: transform 520ms ease, opacity 180ms ease;
       }
 
       .btn:hover {
         transform: translateY(-1px);
-        border-color: rgba(255, 255, 255, 0.32);
-        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.28);
+      }
+
+      .btn:hover::after {
+        opacity: 1;
+        transform: translateX(120%);
       }
 
       .btn.primary {
-        color: #050603;
-        border-color: var(--lime);
-        background: var(--lime);
-        box-shadow: 0 0 36px rgba(200, 255, 46, 0.24);
+        color: #101300;
+        border-color: rgba(201, 255, 44, 0.74);
+        background: linear-gradient(180deg, #d8ff4c, var(--lime));
+        box-shadow: 0 18px 54px rgba(201, 255, 44, 0.18);
       }
 
       .btn.ghost {
-        border-color: rgba(111, 199, 255, 0.45);
-        background: rgba(111, 199, 255, 0.1);
+        background: rgba(255, 255, 255, 0.035);
       }
 
-      .hero {
+      .wrap {
+        width: min(1180px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .section {
         position: relative;
+        padding: 96px 0;
+      }
+
+      .section.tight {
+        padding-top: 28px;
+      }
+
+      .section-head {
         display: grid;
-        grid-template-columns: minmax(360px, 0.86fr) minmax(520px, 1.14fr);
-        align-items: center;
-        gap: clamp(28px, 5vw, 80px);
-        min-height: 900px;
-        padding: 132px clamp(18px, 4vw, 64px) 84px;
-        isolation: isolate;
-      }
-
-      .hero > *,
-      .story > *,
-      .section-head > * {
-        min-width: 0;
-      }
-
-      .hero::before {
-        content: "";
-        position: absolute;
-        inset: 76px 0 0;
-        z-index: -2;
-        background:
-          radial-gradient(circle at 70% 18%, rgba(200, 255, 46, 0.08), transparent 28rem),
-          linear-gradient(180deg, rgba(3, 4, 5, 0), var(--bg) 90%);
+        grid-template-columns: minmax(0, 0.76fr) minmax(260px, 0.34fr);
+        align-items: end;
+        gap: 28px;
+        margin-bottom: 34px;
       }
 
       .eyebrow {
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        margin: 0 0 18px;
-        color: var(--lime);
+        gap: 8px;
+        margin: 0 0 16px;
+        color: var(--blue);
         font-size: 12px;
-        font-weight: 950;
+        font-weight: 900;
         text-transform: uppercase;
       }
 
       .eyebrow::before {
         content: "";
-        width: 8px;
-        height: 8px;
-        background: var(--lime);
-        box-shadow: 0 0 18px rgba(200, 255, 46, 0.9);
+        width: 22px;
+        height: 2px;
+        background: currentColor;
       }
 
       h1,
-      h2 {
+      h2,
+      h3,
+      p {
         margin: 0;
-        letter-spacing: 0;
-        text-transform: uppercase;
+        overflow-wrap: anywhere;
       }
 
       h1 {
-        max-width: 780px;
-        font-size: clamp(54px, 7.4vw, 112px);
-        line-height: 0.94;
+        max-width: 720px;
+        font-size: clamp(56px, 12vw, 148px);
+        line-height: 0.86;
+        font-weight: 950;
+        text-transform: uppercase;
       }
 
-      h1 span,
-      h2 span {
-        color: var(--lime);
+      h2 {
+        max-width: 760px;
+        font-size: clamp(34px, 5vw, 72px);
+        line-height: 0.95;
+        font-weight: 940;
       }
 
-      .mobile-break {
-        display: none;
+      h3 {
+        font-size: 20px;
+        line-height: 1.15;
+        font-weight: 920;
+      }
+
+      .lead {
+        max-width: 660px;
+        color: #d4dae5;
+        font-size: clamp(17px, 2vw, 21px);
+        line-height: 1.72;
+        font-weight: 650;
+        overflow-wrap: anywhere;
+      }
+
+      .copy {
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.74;
+        font-weight: 620;
+      }
+
+      .copy strong {
+        color: var(--ink);
+      }
+
+      .hero {
+        min-height: 880px;
+        padding: 138px 0 48px;
+        display: flex;
+        align-items: flex-start;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.88fr) minmax(430px, 0.72fr);
+        align-items: start;
+        gap: clamp(28px, 5vw, 72px);
       }
 
       .hero-copy {
-        max-width: 690px;
-        margin: 28px 0 0;
-        color: #dce2ee;
-        font-size: clamp(16px, 1.5vw, 20px);
-        line-height: 1.75;
-        overflow-wrap: anywhere;
+        position: relative;
+        z-index: 2;
+        min-width: 0;
+      }
+
+      .hero-mark {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .hero-mark img {
+        width: 86px;
+        height: 86px;
+        object-fit: contain;
+        filter: drop-shadow(0 22px 42px rgba(0, 0, 0, 0.65));
+      }
+
+      .hero-mark span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .hero h1 + .lead {
+        margin-top: 26px;
       }
 
       .hero-actions {
@@ -274,558 +385,898 @@
         margin-top: 34px;
       }
 
-      .hero-proof {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
-        max-width: 660px;
-        margin-top: 42px;
-      }
-
-      .proof {
-        min-height: 88px;
-        padding: 15px;
-        border: 1px solid var(--line);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%);
-      }
-
-      .proof strong {
-        display: block;
-        font-size: 24px;
-      }
-
-      .proof span {
-        display: block;
-        margin-top: 8px;
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 800;
-      }
-
-      .stage {
-        position: relative;
-        min-height: 660px;
-        perspective: 1600px;
-      }
-
-      .stage-frame {
-        position: absolute;
-        inset: 74px 0 auto auto;
-        width: min(920px, 100%);
-        padding: 10px;
-        border: 1px solid rgba(200, 255, 46, 0.28);
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.025));
-        box-shadow: var(--shadow);
-        transform: rotateY(-10deg) rotateX(4deg) rotateZ(-1deg);
-        transform-origin: center;
-      }
-
-      .stage-frame::before {
-        content: "";
-        display: block;
-        height: 34px;
-        border-bottom: 1px solid var(--line);
-        background:
-          radial-gradient(circle at 18px 16px, var(--rose) 0 4px, transparent 5px),
-          radial-gradient(circle at 36px 16px, var(--amber) 0 4px, transparent 5px),
-          radial-gradient(circle at 54px 16px, var(--lime) 0 4px, transparent 5px),
-          rgba(0, 0, 0, 0.36);
-      }
-
-      .stage-frame img {
-        width: 100%;
-        aspect-ratio: 16 / 10;
-        object-fit: cover;
-        object-position: left top;
-        filter: saturate(1.06) contrast(1.05);
-      }
-
-      .stage-chip,
-      .stage-card {
-        position: absolute;
-        border: 1px solid var(--line);
-        background: rgba(12, 13, 18, 0.78);
-        backdrop-filter: blur(18px);
-        box-shadow: 0 18px 56px rgba(0, 0, 0, 0.48);
-      }
-
-      .stage-chip {
-        left: 10%;
-        bottom: 52px;
-        width: 260px;
-        padding: 18px;
-      }
-
-      .stage-card {
-        right: 6%;
-        top: 4px;
-        width: 290px;
-        overflow: hidden;
-      }
-
-      .stage-card img {
-        width: 100%;
-        aspect-ratio: 16 / 9;
-        object-fit: cover;
-        object-position: center top;
-        opacity: 0.86;
-      }
-
-      .stage-card div,
-      .stage-chip div {
-        padding: 14px;
-      }
-
-      .stage-card strong,
-      .stage-chip strong {
-        display: block;
-        font-size: 18px;
-      }
-
-      .stage-card span,
-      .stage-chip span {
-        display: block;
-        margin-top: 8px;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.5;
-      }
-
-      .stage-chip {
-        border-color: rgba(200, 255, 46, 0.35);
-      }
-
-      .stage-card {
-        border-color: rgba(111, 199, 255, 0.35);
-      }
-
-      .mobile-lang {
-        display: none;
-      }
-
-      section {
-        padding: 90px clamp(18px, 4vw, 64px);
-      }
-
-      .section-head {
-        display: grid;
-        grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.58fr);
-        align-items: end;
-        gap: 44px;
-        margin-bottom: 38px;
-      }
-
-      h2 {
-        font-size: clamp(38px, 5.4vw, 82px);
-        line-height: 0.98;
-      }
-
-      .section-head p {
-        margin: 0;
-        color: var(--muted);
-        font-size: 16px;
-        line-height: 1.7;
-        overflow-wrap: anywhere;
-      }
-
-      .capability-grid {
+      .metric-strip {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
-      }
-
-      .capability {
-        position: relative;
-        min-height: 268px;
-        padding: 22px;
-        border: 1px solid var(--line);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025));
-        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 32px), calc(100% - 32px) 100%, 0 100%);
-      }
-
-      .capability:nth-child(2) {
-        border-color: rgba(111, 199, 255, 0.42);
-      }
-
-      .capability:nth-child(3) {
-        border-color: rgba(255, 178, 93, 0.42);
-      }
-
-      .capability:nth-child(4) {
-        border-color: rgba(200, 255, 46, 0.42);
-      }
-
-      .capability small {
-        color: var(--dim);
-        font-size: 12px;
-        font-weight: 950;
-      }
-
-      .capability h3 {
-        margin: 76px 0 14px;
-        font-size: 23px;
-        line-height: 1.18;
-      }
-
-      .capability p {
-        margin: 0;
-        color: var(--muted);
-        font-size: 14px;
-        line-height: 1.7;
-      }
-
-      .narrative {
-        display: grid;
-        gap: 120px;
-        padding-top: 96px;
-      }
-
-      .story {
-        display: grid;
-        grid-template-columns: minmax(0, 0.85fr) minmax(520px, 1.15fr);
-        align-items: center;
-        gap: clamp(28px, 5vw, 76px);
-      }
-
-      .story.reverse {
-        grid-template-columns: minmax(520px, 1.15fr) minmax(0, 0.85fr);
-      }
-
-      .story.reverse .story-copy {
-        order: 2;
-      }
-
-      .story-copy .eyebrow {
-        margin-bottom: 16px;
-      }
-
-      .story-copy h3 {
-        margin: 0;
-        font-size: clamp(32px, 4.5vw, 68px);
-        line-height: 1;
-        text-transform: uppercase;
-      }
-
-      .story-copy p {
-        margin: 20px 0 0;
-        color: #dce2ee;
-        font-size: 16px;
-        line-height: 1.75;
-        overflow-wrap: anywhere;
-      }
-
-      .bullet-row {
-        display: grid;
         gap: 10px;
-        margin-top: 28px;
-      }
-
-      .bullet {
-        display: grid;
-        grid-template-columns: 28px 1fr;
-        gap: 12px;
-        align-items: start;
-        color: var(--muted);
-        font-size: 14px;
-        line-height: 1.55;
-        overflow-wrap: anywhere;
-      }
-
-      .bullet::before {
-        content: "";
-        width: 28px;
-        height: 2px;
-        margin-top: 11px;
-        background: var(--lime);
-        box-shadow: 0 0 14px rgba(200, 255, 46, 0.6);
-      }
-
-      .window-stack {
-        position: relative;
-      }
-
-      .product-window {
-        overflow: hidden;
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        background: rgba(255, 255, 255, 0.04);
-        box-shadow: var(--shadow);
-      }
-
-      .product-window img {
-        width: 100%;
-        aspect-ratio: 16 / 10;
-        object-fit: cover;
-        object-position: left top;
-      }
-
-      .window-caption {
-        display: flex;
-        align-items: end;
-        justify-content: space-between;
-        gap: 18px;
-        padding: 20px;
-        border-top: 1px solid var(--line);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.018));
-      }
-
-      .window-caption strong {
-        display: block;
-        font-size: 22px;
-      }
-
-      .window-caption span {
-        display: block;
-        margin-top: 7px;
-        color: var(--muted);
-        font-size: 14px;
-        line-height: 1.55;
-      }
-
-      .tag {
-        color: var(--blue);
-        font-size: 13px;
-        font-weight: 950;
-        text-transform: uppercase;
-        white-space: nowrap;
-      }
-
-      .mini-windows {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
-        margin-top: 14px;
-      }
-
-      .mini-windows .product-window img {
-        aspect-ratio: 16 / 9;
-      }
-
-      .lab {
-        border-top: 1px solid var(--line-soft);
-        border-bottom: 1px solid var(--line-soft);
-        background:
-          linear-gradient(90deg, rgba(200, 255, 46, 0.06), transparent 34%),
-          linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
-      }
-
-      .lab-grid {
-        display: grid;
-        grid-template-columns: 1fr 1.18fr 1fr;
-        gap: 14px;
-      }
-
-      .lab-card {
-        min-height: 420px;
-        padding: 22px;
-        border: 1px solid var(--line);
-        background: rgba(10, 11, 15, 0.78);
-      }
-
-      .lab-card.center {
-        border-color: rgba(200, 255, 46, 0.34);
-        background: linear-gradient(180deg, rgba(200, 255, 46, 0.08), rgba(255, 255, 255, 0.025));
-      }
-
-      .lab-card h3 {
-        margin: 0;
-        font-size: 20px;
-      }
-
-      .lab-card p {
-        margin: 10px 0 0;
-        color: var(--muted);
-        line-height: 1.65;
-      }
-
-      .metric-list {
-        display: grid;
-        gap: 12px;
-        margin-top: 26px;
+        margin-top: 42px;
+        max-width: 720px;
       }
 
       .metric {
+        min-width: 0;
+        min-height: 102px;
+        padding: 15px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025)),
+          rgba(12, 13, 17, 0.76);
+      }
+
+      .metric small {
+        display: block;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 850;
+        text-transform: uppercase;
+      }
+
+      .metric strong {
+        display: block;
+        margin-top: 12px;
+        color: var(--ink);
+        font-size: clamp(22px, 2.8vw, 32px);
+        line-height: 1;
+        font-weight: 950;
+      }
+
+      .metric span {
+        display: block;
+        margin-top: 9px;
+        color: var(--soft);
+        font-size: 12px;
+        font-weight: 760;
+      }
+
+      .metric.blue strong,
+      .metric.blue small {
+        color: var(--blue);
+      }
+
+      .metric.amber strong,
+      .metric.amber small {
+        color: var(--amber);
+      }
+
+      .metric.lime strong,
+      .metric.lime small {
+        color: var(--lime);
+      }
+
+      .hero-stage {
+        position: relative;
+        min-height: 650px;
+        min-width: 0;
+      }
+
+      .stage-plate {
+        position: absolute;
+        inset: 4% 0 3% 0;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 18%),
+          linear-gradient(180deg, rgba(21, 23, 30, 0.92), rgba(5, 6, 8, 0.92));
+        box-shadow: var(--shadow);
+        transform: perspective(1100px) rotateY(-10deg) rotateX(4deg);
+        transform-origin: center;
+        overflow: hidden;
+      }
+
+      .stage-plate::before {
+        content: "";
+        position: absolute;
+        inset: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+      }
+
+      .stage-plate::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, transparent 0 18%, rgba(108, 200, 255, 0.13) 18% 18.4%, transparent 18.4%),
+          linear-gradient(0deg, transparent 0 62%, rgba(201, 255, 44, 0.12) 62% 62.5%, transparent 62.5%);
+        opacity: 0.9;
+      }
+
+      .scan-window,
+      .float-panel,
+      .hud-chip,
+      .brand-disc {
+        position: absolute;
+        z-index: 2;
+      }
+
+      .brand-disc {
+        top: 10%;
+        left: 13%;
+        width: 210px;
+        height: 210px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(201, 255, 44, 0.26);
+        border-radius: 50%;
+        background:
+          conic-gradient(
+            from 35deg,
+            rgba(201, 255, 44, 0.35),
+            transparent 24%,
+            rgba(108, 200, 255, 0.2),
+            transparent 62%,
+            rgba(255, 181, 97, 0.22),
+            rgba(201, 255, 44, 0.35)
+          );
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.52);
+      }
+
+      .brand-disc::before {
+        content: "";
+        position: absolute;
+        inset: 13px;
+        border-radius: 50%;
+        background: rgba(5, 6, 8, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.11);
+      }
+
+      .brand-disc img {
+        position: relative;
+        width: 128px;
+        height: 128px;
+        object-fit: contain;
+      }
+
+      .scan-window {
+        right: 2%;
+        top: 14%;
+        width: 56%;
+        min-height: 250px;
+        padding: 16px;
+        border: 1px solid rgba(108, 200, 255, 0.34);
+        border-radius: 8px;
+        background: rgba(8, 10, 16, 0.82);
+        box-shadow: 0 26px 70px rgba(0, 0, 0, 0.48);
+        transform: perspective(900px) rotateY(-8deg) rotateX(4deg);
+        overflow: hidden;
+      }
+
+      .scan-window img {
+        width: 100%;
+        height: 184px;
+        object-fit: cover;
+        object-position: 35% 18%;
+        filter: saturate(0.86) contrast(1.08);
+      }
+
+      .window-meta {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 18px;
-        padding: 14px;
-        border: 1px solid var(--line);
-        background: rgba(255, 255, 255, 0.045);
-      }
-
-      .metric b {
-        font-size: 26px;
-      }
-
-      .radar-img {
-        margin-top: 24px;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-      }
-
-      .radar-img img {
-        width: 100%;
-        aspect-ratio: 16 / 11;
-        object-fit: cover;
-        object-position: center top;
-      }
-
-      .pipeline {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
-      }
-
-      .step {
-        min-height: 190px;
-        padding: 22px;
-        border: 1px solid rgba(200, 255, 46, 0.26);
-        background: rgba(255, 255, 255, 0.04);
-      }
-
-      .step b {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 34px;
-        height: 34px;
-        color: #050603;
-        background: var(--lime);
-      }
-
-      .step strong {
-        display: block;
-        margin-top: 28px;
-        font-size: 18px;
-      }
-
-      .step span {
-        display: block;
-        margin-top: 10px;
+        gap: 16px;
+        padding-top: 13px;
         color: var(--muted);
-        font-size: 14px;
-        line-height: 1.58;
-      }
-
-      .download {
-        padding-top: 46px;
-      }
-
-      .download-panel {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        align-items: center;
-        gap: 30px;
-        padding: clamp(26px, 4vw, 54px);
-        border: 1px solid rgba(200, 255, 46, 0.36);
-        background:
-          linear-gradient(135deg, rgba(200, 255, 46, 0.11), transparent 32%),
-          rgba(15, 16, 20, 0.88);
-        box-shadow: var(--shadow);
-      }
-
-      .download-panel h2 {
-        font-size: clamp(36px, 5.3vw, 76px);
-      }
-
-      .download-panel p {
-        max-width: 760px;
-        margin: 18px 0 0;
-        color: var(--muted);
-        font-size: 16px;
-        line-height: 1.75;
-      }
-
-      .system-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 24px;
-      }
-
-      .system-list span {
-        padding: 8px 10px;
-        border: 1px solid var(--line);
-        background: rgba(255, 255, 255, 0.055);
-        color: #dfe6f2;
         font-size: 12px;
         font-weight: 850;
       }
 
-      .contact-panel {
+      .window-meta strong {
+        color: var(--ink);
+        font-size: 18px;
+      }
+
+      .float-panel {
+        left: 7%;
+        bottom: 13%;
+        width: 60%;
+        padding: 16px;
+        border: 1px solid rgba(255, 181, 97, 0.28);
+        border-radius: 8px;
+        background:
+          linear-gradient(90deg, rgba(255, 181, 97, 0.11), rgba(108, 200, 255, 0.05)),
+          rgba(12, 13, 18, 0.92);
+        box-shadow: 0 22px 70px rgba(0, 0, 0, 0.5);
+      }
+
+      .float-panel img {
+        width: 100%;
+        height: 148px;
+        object-fit: cover;
+        object-position: 52% 36%;
+        opacity: 0.82;
+      }
+
+      .float-panel .caption {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 24px;
+        gap: 12px;
         margin-top: 14px;
-        padding: 26px;
+      }
+
+      .float-panel strong {
+        font-size: 18px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 26px;
+        padding: 0 10px;
         border: 1px solid var(--line);
-        background: rgba(255, 255, 255, 0.04);
-      }
-
-      .contact-panel strong {
-        display: block;
-        font-size: 21px;
-      }
-
-      .contact-panel span {
-        display: block;
-        margin-top: 8px;
+        border-radius: 999px;
         color: var(--muted);
-        line-height: 1.65;
+        background: rgba(255, 255, 255, 0.04);
+        font-size: 11px;
+        font-weight: 900;
+        white-space: nowrap;
       }
 
-      .email-link {
-        color: var(--lime);
+      .hud-chip {
+        min-width: 158px;
+        padding: 13px 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(10, 12, 17, 0.88);
+        box-shadow: 0 18px 52px rgba(0, 0, 0, 0.46);
+      }
+
+      .hud-chip small {
+        display: block;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 850;
+      }
+
+      .hud-chip strong {
+        display: block;
+        margin-top: 6px;
+        font-size: 27px;
+        line-height: 1;
         font-weight: 950;
       }
 
-      .footer {
-        display: flex;
-        justify-content: space-between;
-        gap: 24px;
-        padding: 28px clamp(18px, 4vw, 64px) 42px;
-        border-top: 1px solid var(--line);
-        color: var(--dim);
-        font-size: 13px;
+      .hud-chip.one {
+        top: 39%;
+        left: 2%;
+        border-color: rgba(108, 200, 255, 0.32);
       }
 
-      @media (max-width: 1180px) {
-        .hero,
-        .story,
-        .story.reverse,
-        .section-head,
-        .lab-grid {
+      .hud-chip.two {
+        right: -2%;
+        bottom: 29%;
+        border-color: rgba(201, 255, 44, 0.34);
+      }
+
+      .hud-chip.three {
+        left: 40%;
+        bottom: 2%;
+        border-color: rgba(255, 95, 100, 0.3);
+      }
+
+      .rail {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 1px;
+        margin-top: -28px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--line);
+      }
+
+      .rail-item {
+        min-height: 146px;
+        padding: 22px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025)),
+          #0a0b0f;
+      }
+
+      .rail-item small {
+        display: block;
+        color: var(--soft);
+        font-size: 11px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .rail-item strong {
+        display: block;
+        margin-top: 16px;
+        font-size: 18px;
+        line-height: 1.15;
+        font-weight: 930;
+      }
+
+      .rail-item p {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+        font-weight: 620;
+      }
+
+      .feature-stage {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(360px, 0.55fr);
+        gap: 24px;
+        align-items: stretch;
+      }
+
+      .feature-stage > *,
+      .split > *,
+      .studio-grid > *,
+      .coach > *,
+      .download-panel > *,
+      .section-head > * {
+        min-width: 0;
+      }
+
+      .command-surface {
+        position: relative;
+        min-height: 560px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018)),
+          #08090d;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .command-surface::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, transparent 0 52%, rgba(108, 200, 255, 0.12) 52% 52.4%, transparent 52.4%),
+          linear-gradient(0deg, transparent 0 30%, rgba(201, 255, 44, 0.09) 30% 30.4%, transparent 30.4%);
+        pointer-events: none;
+        opacity: 0.7;
+      }
+
+      .surface-shot {
+        position: absolute;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow: hidden;
+        background: #090a0e;
+        box-shadow: 0 22px 70px rgba(0, 0, 0, 0.46);
+      }
+
+      .surface-shot img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: saturate(0.9) contrast(1.04);
+      }
+
+      .surface-shot.primary {
+        left: 4%;
+        top: 9%;
+        width: 64%;
+        height: 48%;
+      }
+
+      .surface-shot.primary img {
+        object-position: 54% 22%;
+      }
+
+      .surface-shot.secondary {
+        right: 4%;
+        bottom: 9%;
+        width: 44%;
+        height: 42%;
+      }
+
+      .surface-shot.secondary img {
+        object-position: 52% 12%;
+      }
+
+      .surface-shot.tertiary {
+        left: 10%;
+        bottom: 10%;
+        width: 34%;
+        height: 28%;
+      }
+
+      .surface-shot.tertiary img {
+        object-position: 50% 45%;
+      }
+
+      .surface-label {
+        position: absolute;
+        z-index: 3;
+        right: 5%;
+        top: 8%;
+        max-width: 270px;
+        padding: 18px;
+        border: 1px solid rgba(201, 255, 44, 0.26);
+        border-radius: 8px;
+        background: rgba(4, 5, 7, 0.9);
+      }
+
+      .surface-label strong {
+        display: block;
+        color: var(--lime);
+        font-size: 32px;
+        line-height: 1;
+        font-weight: 950;
+      }
+
+      .surface-label span {
+        display: block;
+        margin-top: 9px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+        font-weight: 700;
+      }
+
+      .module-stack {
+        display: grid;
+        gap: 14px;
+      }
+
+      .module {
+        position: relative;
+        min-height: 166px;
+        padding: 22px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)),
+          rgba(13, 14, 19, 0.88);
+        overflow: hidden;
+      }
+
+      .module::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        width: 4px;
+        background: var(--blue);
+        opacity: 0.78;
+      }
+
+      .module.amber::before {
+        background: var(--amber);
+      }
+
+      .module.lime::before {
+        background: var(--lime);
+      }
+
+      .module.violet::before {
+        background: var(--violet);
+      }
+
+      .module small {
+        color: var(--soft);
+        font-size: 11px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .module h3 {
+        margin-top: 12px;
+      }
+
+      .module p {
+        margin-top: 11px;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: minmax(330px, 0.48fr) minmax(0, 0.72fr);
+        gap: 24px;
+        align-items: center;
+      }
+
+      .intel-panel {
+        position: relative;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(10, 11, 15, 0.88);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .intel-panel img {
+        width: 100%;
+        height: 470px;
+        object-fit: cover;
+        object-position: 50% 30%;
+        opacity: 0.82;
+        filter: saturate(0.88) contrast(1.08);
+      }
+
+      .intel-overlay {
+        position: absolute;
+        inset: auto 24px 24px 24px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .intel-stat {
+        min-height: 92px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(3, 4, 5, 0.84);
+      }
+
+      .intel-stat small {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 850;
+      }
+
+      .intel-stat strong {
+        display: block;
+        margin-top: 10px;
+        font-size: 26px;
+        line-height: 1;
+      }
+
+      .story {
+        display: grid;
+        gap: 14px;
+      }
+
+      .story-row {
+        display: grid;
+        grid-template-columns: 112px 1fr;
+        gap: 18px;
+        align-items: start;
+        padding: 20px 0;
+        border-bottom: 1px solid var(--line-soft);
+      }
+
+      .story-row:last-child {
+        border-bottom: 0;
+      }
+
+      .story-index {
+        color: var(--soft);
+        font-size: 13px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .story-row p {
+        margin-top: 10px;
+      }
+
+      .studio-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.72fr) minmax(340px, 0.48fr);
+        gap: 24px;
+      }
+
+      .wide-shot {
+        position: relative;
+        min-height: 520px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #07080c;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .wide-shot img {
+        width: 100%;
+        height: 100%;
+        min-height: 520px;
+        object-fit: cover;
+        object-position: 60% 35%;
+        opacity: 0.78;
+        filter: saturate(0.9) contrast(1.08);
+      }
+
+      .wide-shot::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(3, 4, 5, 0.74), transparent 45%),
+          linear-gradient(0deg, rgba(3, 4, 5, 0.8), transparent 34%);
+        pointer-events: none;
+      }
+
+      .shot-caption {
+        position: absolute;
+        z-index: 2;
+        left: 26px;
+        bottom: 26px;
+        max-width: 410px;
+      }
+
+      .shot-caption .pill {
+        color: var(--lime);
+        border-color: rgba(201, 255, 44, 0.28);
+      }
+
+      .shot-caption h3 {
+        margin-top: 16px;
+        font-size: clamp(26px, 4vw, 44px);
+        line-height: 1;
+      }
+
+      .shot-caption p {
+        margin-top: 14px;
+      }
+
+      .queue {
+        display: grid;
+        gap: 12px;
+      }
+
+      .queue-row {
+        display: grid;
+        grid-template-columns: 62px 1fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: 13px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.042);
+      }
+
+      .queue-row img {
+        width: 62px;
+        height: 42px;
+        object-fit: cover;
+        border-radius: 6px;
+        opacity: 0.86;
+      }
+
+      .queue-row strong {
+        display: block;
+        font-size: 14px;
+      }
+
+      .queue-row span {
+        display: block;
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 720;
+      }
+
+      .coach {
+        display: grid;
+        grid-template-columns: minmax(340px, 0.52fr) minmax(0, 0.68fr);
+        gap: 24px;
+        align-items: stretch;
+      }
+
+      .coach-board {
+        padding: 24px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02)),
+          rgba(10, 11, 15, 0.9);
+        box-shadow: var(--shadow);
+      }
+
+      .coach-board h3 {
+        font-size: 28px;
+      }
+
+      .coach-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .coach-item {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 14px;
+        align-items: start;
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.035);
+      }
+
+      .coach-item b {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        color: #091006;
+        background: var(--lime);
+        font-size: 14px;
+      }
+
+      .coach-item strong {
+        display: block;
+        font-size: 15px;
+      }
+
+      .coach-item p {
+        margin-top: 7px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+        font-weight: 650;
+      }
+
+      .report-panel {
+        position: relative;
+        min-height: 430px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #07080b;
+        overflow: hidden;
+      }
+
+      .report-panel img {
+        width: 100%;
+        height: 100%;
+        min-height: 430px;
+        object-fit: cover;
+        object-position: 50% 48%;
+        opacity: 0.62;
+        filter: saturate(0.82) contrast(1.08);
+      }
+
+      .report-panel::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(3, 4, 5, 0.9), transparent 56%),
+          linear-gradient(0deg, rgba(3, 4, 5, 0.86), transparent 50%);
+      }
+
+      .report-data {
+        position: absolute;
+        z-index: 2;
+        inset: auto 24px 24px 24px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .report-data .metric {
+        min-height: 100px;
+      }
+
+      .download {
+        padding-bottom: 48px;
+      }
+
+      .download-panel {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 0.78fr) minmax(280px, 0.35fr);
+        gap: 30px;
+        align-items: center;
+        padding: clamp(28px, 5vw, 54px);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(120deg, rgba(201, 255, 44, 0.13), transparent 38%),
+          linear-gradient(300deg, rgba(108, 200, 255, 0.12), transparent 40%),
+          rgba(12, 13, 17, 0.92);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .download-panel::after {
+        content: "";
+        position: absolute;
+        right: -40px;
+        top: 50%;
+        width: 360px;
+        height: 1px;
+        background: rgba(201, 255, 44, 0.48);
+        transform: rotate(-28deg);
+      }
+
+      .download h2 {
+        max-width: 740px;
+      }
+
+      .download-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 26px;
+      }
+
+      .contact {
+        padding: 22px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(3, 4, 5, 0.62);
+      }
+
+      .contact small {
+        display: block;
+        color: var(--soft);
+        font-size: 11px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .contact a {
+        display: block;
+        margin-top: 12px;
+        color: var(--blue);
+        font-size: 19px;
+        font-weight: 900;
+        overflow-wrap: anywhere;
+      }
+
+      footer {
+        padding: 28px 0 48px;
+        color: var(--soft);
+        font-size: 13px;
+        font-weight: 650;
+      }
+
+      footer .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        border-top: 1px solid var(--line);
+        padding-top: 22px;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: translateY(0);
+        transition:
+          opacity 600ms ease,
+          transform 600ms ease;
+      }
+
+      .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 1040px) {
+        .nav-links {
+          display: none;
+        }
+
+        .hero {
+          padding-top: 110px;
+          min-height: auto;
+        }
+
+        .hero-grid,
+        .feature-stage,
+        .split,
+        .studio-grid,
+        .coach,
+        .download-panel {
           grid-template-columns: 1fr;
         }
 
-        .story.reverse .story-copy {
-          order: 0;
-        }
-
-        .stage {
+        .hero-stage {
           min-height: 560px;
         }
 
-        .stage-frame {
-          position: relative;
-          inset: auto;
-          width: 100%;
-          transform: none;
+        .section-head {
+          grid-template-columns: 1fr;
         }
 
-        .stage-chip,
-        .stage-card {
-          position: relative;
-          inset: auto;
-          width: auto;
-          margin-top: 14px;
-        }
-
-        .capability-grid,
-        .pipeline {
+        .rail {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
@@ -833,106 +1284,185 @@
       @media (max-width: 760px) {
         .nav {
           height: 68px;
-          padding-inline: 16px;
+          padding: 0 14px;
+          gap: 10px;
+          justify-content: flex-start;
+        }
+
+        .brand img {
+          width: 38px;
+          height: 38px;
         }
 
         .brand span {
           display: none;
         }
 
-        .nav-links,
-        .nav-actions {
+        .nav-actions .btn {
           display: none;
         }
 
+        .nav-actions {
+          flex-shrink: 0;
+          margin-left: auto;
+        }
+
+        .lang {
+          flex-shrink: 0;
+          padding: 4px;
+        }
+
+        .lang button {
+          padding: 8px 9px;
+          font-size: 12px;
+        }
+
+        .wrap {
+          width: min(100% - 28px, 1180px);
+        }
+
         .hero {
-          width: 100vw;
-          max-width: 100vw;
-          grid-template-columns: minmax(0, 1fr);
           min-height: auto;
-          padding-inline: 20px;
-          padding-top: 112px;
-          padding-bottom: 58px;
-          gap: 36px;
+          padding: 88px 0 48px;
         }
 
         h1 {
-          font-size: clamp(38px, 10.8vw, 48px);
-          line-height: 1.02;
-          word-break: break-word;
+          font-size: clamp(52px, 19vw, 78px);
         }
 
-        .mobile-break {
-          display: inline;
+        .lead {
+          font-size: 16px;
+          line-height: 1.62;
         }
 
-        .hero-copy {
+        .hero-mark img {
+          width: 70px;
+          height: 70px;
+        }
+
+        .hero-stage {
+          min-height: 470px;
+        }
+
+        .metric-strip {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
           width: 100%;
-          max-width: calc(100vw - 40px);
-          font-size: 15px;
-          line-height: 1.68;
-          word-break: break-all;
+          max-width: 100%;
         }
 
-        .hero-actions,
-        .hero-proof,
-        .stage,
-        .stage-frame {
-          max-width: calc(100vw - 40px);
+        .stage-plate {
+          inset: 2% 0 4% 0;
+          transform: none;
         }
 
-        .mobile-lang {
-          display: inline-flex;
-          width: fit-content;
-          margin-top: 14px;
+        .brand-disc {
+          left: 6%;
+          top: 8%;
+          width: 154px;
+          height: 154px;
         }
 
-        .hero-proof,
-        .capability-grid,
-        .pipeline,
-        .mini-windows,
-        .download-panel {
+        .brand-disc img {
+          width: 94px;
+          height: 94px;
+        }
+
+        .scan-window {
+          right: 3%;
+          top: 24%;
+          width: 76%;
+          transform: none;
+        }
+
+        .float-panel {
+          left: 4%;
+          width: 82%;
+          bottom: 12%;
+        }
+
+        .hud-chip {
+          min-width: 132px;
+        }
+
+        .hud-chip.one {
+          top: 41%;
+          left: 0;
+        }
+
+        .hud-chip.two {
+          right: 0;
+          bottom: 5%;
+        }
+
+        .hud-chip.three {
+          display: none;
+        }
+
+        .rail {
+          grid-template-columns: 1fr;
+          margin-top: 0;
+        }
+
+        .section {
+          padding: 70px 0;
+        }
+
+        .command-surface {
+          min-height: 680px;
+        }
+
+        .surface-shot.primary,
+        .surface-shot.secondary,
+        .surface-shot.tertiary,
+        .surface-label {
+          position: relative;
+          inset: auto;
+          width: calc(100% - 28px);
+          height: auto;
+          min-height: 190px;
+          margin: 14px;
+        }
+
+        .surface-shot img {
+          height: 210px;
+        }
+
+        .surface-label {
+          max-width: none;
+          min-height: 0;
+        }
+
+        .intel-overlay,
+        .report-data {
+          position: relative;
+          inset: auto;
+          grid-template-columns: 1fr;
+          margin: 14px;
+        }
+
+        .intel-panel img,
+        .wide-shot img,
+        .report-panel img {
+          height: 360px;
+          min-height: 360px;
+        }
+
+        .story-row {
           grid-template-columns: 1fr;
         }
 
-        .stage {
-          min-height: auto;
+        .queue-row {
+          grid-template-columns: 52px 1fr;
         }
 
-        .stage-frame {
-          padding: 7px;
+        .queue-row .pill {
+          grid-column: 2;
+          justify-self: start;
         }
 
-        .stage-frame::before {
-          height: 26px;
-        }
-
-        section {
-          padding-top: 66px;
-          padding-bottom: 66px;
-        }
-
-        .capability {
-          min-height: auto;
-        }
-
-        .capability h3 {
-          margin-top: 42px;
-        }
-
-        .story {
-          gap: 24px;
-        }
-
-        .window-caption,
-        .contact-panel,
-        .footer {
-          flex-direction: column;
+        footer .wrap {
           align-items: flex-start;
-        }
-
-        .lab-card {
-          min-height: auto;
+          flex-direction: column;
         }
       }
     </style>
@@ -940,630 +1470,757 @@
   <body>
     <div class="site">
       <header class="nav">
-        <a class="brand" href="#top" data-track="nav_brand_click">
-          <img id="brandLogo" src="assets/brand-onetap-zh.png" alt="颗秒图标" />
+        <a class="brand" href="#top" data-track="nav_brand">
+          <img data-brand-logo src="assets/brand-onetap-zh.png" alt="颗秒 OneTap" />
           <span>
-            <strong id="brandName">颗秒</strong>
-            <span data-i18n="brandSub">CS2 桌面助手</span>
+            <strong data-i18n="brand.name">颗秒</strong>
+            <span data-i18n="brand.tag">CS2 Desktop Studio</span>
           </span>
         </a>
-        <nav class="nav-links" aria-label="Primary navigation">
-          <a href="#capabilities" data-track="nav_capabilities_click" data-i18n="navCapabilities">能力</a>
-          <a href="#product" data-track="nav_product_click" data-i18n="navProduct">产品</a>
-          <a href="#workflow" data-track="nav_workflow_click" data-i18n="navWorkflow">流程</a>
-          <a href="#contact" data-track="nav_contact_click" data-i18n="navContact">联系</a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#command" data-i18n="nav.command" data-track="nav_command">个人中心</a>
+          <a href="#intel" data-i18n="nav.intel" data-track="nav_intel">职业情报</a>
+          <a href="#studio" data-i18n="nav.studio" data-track="nav_studio">高光生成</a>
+          <a href="#coach" data-i18n="nav.coach" data-track="nav_coach">AI 教练</a>
         </nav>
         <div class="nav-actions">
-          <div class="lang" aria-label="Language switcher">
-            <button class="active" type="button" data-lang="zh">中文</button>
-            <button type="button" data-lang="en">EN</button>
+          <div class="lang" aria-label="Language">
+            <button type="button" data-lang="zh" class="is-active" data-track="lang_zh">中文</button>
+            <button type="button" data-lang="en" data-track="lang_en">EN</button>
           </div>
-          <a class="btn primary" href="#download" data-track="header_download_click" data-i18n="navDownload">下载</a>
+          <a class="btn primary" href="#download" data-i18n="nav.download" data-track="nav_download"
+            >下载</a
+          >
         </div>
       </header>
 
       <main id="top">
-        <section class="hero">
-          <div>
-            <p class="eyebrow" data-i18n="heroEyebrow">CS2 复盘、装备统计与高光生成</p>
-            <h1 data-i18n-html="heroTitle">为 CS2 玩家<span class="mobile-break"><br /></span>打造的<br /><span>复盘与<span class="mobile-break"><br /></span>装备工作台。</span></h1>
-            <p class="hero-copy" data-i18n-html="heroCopy">
-              颗秒把比赛 demo、个人竞技数据、<br />皮肤外设和职业选手参考，集中到一个桌面工作台。<br />
-              通过 AI 教练和高光生成，让每一场对局都变成可复盘、可提升、可发布的素材。
-            </p>
-            <div class="hero-actions">
-              <a class="btn primary" href="#download" data-track="hero_download_click" data-i18n="heroDownload">下载 Windows 版</a>
-              <a class="btn ghost" href="#product" data-track="hero_product_click" data-i18n="heroProduct">查看产品界面</a>
-            </div>
-            <div class="lang mobile-lang" aria-label="Mobile language switcher">
-              <button class="active" type="button" data-lang="zh">中文</button>
-              <button type="button" data-lang="en">EN</button>
-            </div>
-            <div class="hero-proof">
-              <div class="proof">
-                <strong>Demo</strong>
-                <span data-i18n="proofDemo">比赛复盘</span>
-              </div>
-              <div class="proof">
-                <strong>Gear</strong>
-                <span data-i18n="proofGear">皮肤外设统计</span>
-              </div>
-              <div class="proof">
-                <strong>AI + MV</strong>
-                <span data-i18n="proofAi">训练建议与高光生成</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="stage" aria-label="Product interface preview">
-            <div class="stage-frame">
-              <img src="assets/screenshot-home-arsenal.png" alt="颗秒首页个人资产与外设界面" />
-            </div>
-            <div class="stage-card">
-              <img src="assets/screenshot-pro-radar.png" alt="职业选手能力雷达" />
-              <div>
-                <strong data-i18n="stageCardTitle">职业能力雷达</strong>
-                <span data-i18n="stageCardCopy">用职业模板校准自己的表现差距。</span>
-              </div>
-            </div>
-            <div class="stage-chip">
-              <strong data-i18n="stageChipTitle">首页就是你的 CS2 档案</strong>
-              <span data-i18n="stageChipCopy">皮肤库存、外设、Steam Rating 和高价值物品在同一处呈现。</span>
-            </div>
-          </div>
-        </section>
-
-        <section id="capabilities">
-          <div class="section-head">
-            <h2 data-i18n-html="capTitle">不是工具列表，<br /><span>是玩家工作台。</span></h2>
-            <p data-i18n="capCopy">
-              官网把产品能力压缩成四个清晰场景：复盘比赛、整理装备、参考职业、输出内容。每个场景都服务于 CS2 玩家最常见的提升路径。
-            </p>
-          </div>
-          <div class="capability-grid">
-            <article class="capability">
-              <small>01 / DEMO</small>
-              <h3 data-i18n="cap1Title">复盘每一场比赛</h3>
-              <p data-i18n="cap1Copy">导入 demo 后查看比分、地图、击杀、残局和单地图表现，快速定位下一步训练方向。</p>
-            </article>
-            <article class="capability">
-              <small>02 / LOADOUT</small>
-              <h3 data-i18n="cap2Title">统计皮肤与外设</h3>
-              <p data-i18n="cap2Copy">把库存价值、皮肤数量、高价值物品、鼠标键盘显示器等设备资料变成个人档案。</p>
-            </article>
-            <article class="capability">
-              <small>03 / PRO</small>
-              <h3 data-i18n="cap3Title">对比职业选手</h3>
-              <p data-i18n="cap3Copy">实时查询职业选手皮肤、硬件、准星、灵敏度和配置，并与个人数据形成对照。</p>
-            </article>
-            <article class="capability">
-              <small>04 / AI + MV</small>
-              <h3 data-i18n="cap4Title">AI 教练与高光</h3>
-              <p data-i18n="cap4Copy">基于表现趋势给出训练建议，把关键回合加入队列，生成适合发布的视频素材。</p>
-            </article>
-          </div>
-        </section>
-
-        <section id="product" class="narrative">
-          <div class="section-head">
-            <h2 data-i18n-html="productTitle">真实界面，<br /><span>作为产品证据。</span></h2>
-            <p data-i18n="productCopy">
-              截图不再平铺，而是成为能力分镜。每一组界面只证明一个核心价值，让用户快速理解为什么要下载。
-            </p>
-          </div>
-
-          <article class="story">
-            <div class="story-copy">
-              <p class="eyebrow" data-i18n="story1Eyebrow">Personal Command Center</p>
-              <h3 data-i18n-html="story1Title">首页即个人<br /><span>CS2 档案。</span></h3>
-              <p data-i18n="story1Copy">玩家打开软件后先看到自己的库存、皮肤数量、高价值物品、Steam Rating 和桌面设备，官网首屏应该放大这种“属于我的工作台”感受。</p>
-              <div class="bullet-row">
-                <div class="bullet" data-i18n="story1Bullet1">库存价值、皮肤数量和高价值物品形成资产视图。</div>
-                <div class="bullet" data-i18n="story1Bullet2">个人外设和设备资料让玩家看到完整配置档案。</div>
-                <div class="bullet" data-i18n="story1Bullet3">个人数据页补充胜率、残局、ADR、地图表现。</div>
-              </div>
-            </div>
-            <div class="window-stack">
-              <div class="product-window">
-                <img src="assets/screenshot-home-arsenal.png" alt="颗秒首页资产与外设" />
-                <div class="window-caption">
-                  <div>
-                    <strong data-i18n="windowHomeTitle">首页资产与外设</strong>
-                    <span data-i18n="windowHomeCopy">把皮肤、库存价值、Steam Rating 和设备信息集中呈现。</span>
-                  </div>
-                  <span class="tag">HOME</span>
+        <section class="hero section">
+          <div class="wrap hero-grid">
+            <div class="hero-copy reveal">
+              <div class="hero-mark">
+                <img data-brand-logo src="assets/brand-onetap-zh.png" alt="颗秒 OneTap" />
+                <div>
+                  <span data-i18n="hero.kicker">CS2 Desktop Command Center</span>
+                  <span data-i18n="hero.version">Official Website Preview</span>
                 </div>
               </div>
-              <div class="mini-windows">
-                <div class="product-window">
-                  <img src="assets/screenshot-personal-data.png" alt="个人竞技数据" />
-                  <div class="window-caption">
-                    <div>
-                      <strong data-i18n="windowDataTitle">个人竞技数据</strong>
-                      <span data-i18n="windowDataCopy">胜率、残局、K/D、ADR 和地图表现。</span>
-                    </div>
-                    <span class="tag">DATA</span>
-                  </div>
-                </div>
-                <div class="product-window">
-                  <img src="assets/screenshot-map-detail.png" alt="地图详情复盘" />
-                  <div class="window-caption">
-                    <div>
-                      <strong data-i18n="windowMapTitle">地图详情复盘</strong>
-                      <span data-i18n="windowMapCopy">按地图拆解胜负、CT/T 表现和多杀数据。</span>
-                    </div>
-                    <span class="tag">MAP</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="story reverse">
-            <div class="story-copy">
-              <p class="eyebrow" data-i18n="story2Eyebrow">Pro Comparison Lab</p>
-              <h3 data-i18n-html="story2Title">把职业模板变成<br /><span>可参考的配置。</span></h3>
-              <p data-i18n="story2Copy">职业选手内容不是简单资料库，而是和玩家自己的数据、皮肤、外设、准星、灵敏度进行对比，形成可以执行的参考。</p>
-              <div class="bullet-row">
-                <div class="bullet" data-i18n="story2Bullet1">能力雷达呈现个人表现和职业模板的差距。</div>
-                <div class="bullet" data-i18n="story2Bullet2">皮肤对比覆盖磨损、品质和参考价格。</div>
-                <div class="bullet" data-i18n="story2Bullet3">外设与配置对比支持复制职业设置。</div>
-              </div>
-            </div>
-            <div class="window-stack">
-              <div class="product-window">
-                <img src="assets/screenshot-pro-radar.png" alt="职业选手能力雷达对比" />
-                <div class="window-caption">
-                  <div>
-                    <strong data-i18n="windowProTitle">职业能力雷达</strong>
-                    <span data-i18n="windowProCopy">用 Rating、DPR、KAST、ADR、KPR 对比个人表现和职业模板。</span>
-                  </div>
-                  <span class="tag">PRO</span>
-                </div>
-              </div>
-              <div class="mini-windows">
-                <div class="product-window">
-                  <img src="assets/screenshot-skin-compare.png" alt="皮肤进阶对比" />
-                  <div class="window-caption">
-                    <div>
-                      <strong data-i18n="windowSkinTitle">皮肤进阶对比</strong>
-                      <span data-i18n="windowSkinCopy">对比个人库存与职业选手皮肤。</span>
-                    </div>
-                    <span class="tag">SKINS</span>
-                  </div>
-                </div>
-                <div class="product-window">
-                  <img src="assets/screenshot-gear-compare.png" alt="外设配置对比" />
-                  <div class="window-caption">
-                    <div>
-                      <strong data-i18n="windowGearTitle">外设与配置对比</strong>
-                      <span data-i18n="windowGearCopy">覆盖鼠标、键盘、显示器和准星。</span>
-                    </div>
-                    <span class="tag">GEAR</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="story">
-            <div class="story-copy">
-              <p class="eyebrow" data-i18n="story3Eyebrow">Demo To Publish</p>
-              <h3 data-i18n-html="story3Title">从比赛文件到<br /><span>可发布素材。</span></h3>
-              <p data-i18n="story3Copy">高光生成是转化点。官网需要让用户看到：导入 demo 后可以选择比赛、模板和击杀事件，最后进入可控的生成队列。</p>
-              <div class="bullet-row">
-                <div class="bullet" data-i18n="story3Bullet1">比赛历史页负责选择 demo、模板和关键事件。</div>
-                <div class="bullet" data-i18n="story3Bullet2">生成队列展示排队、运行、失败和进度状态。</div>
-                <div class="bullet" data-i18n="story3Bullet3">AI 教练建议补充“为什么要剪这场”的训练价值。</div>
-              </div>
-            </div>
-            <div class="window-stack">
-              <div class="product-window">
-                <img src="assets/screenshot-match-history.png" alt="比赛历史与高光选择" />
-                <div class="window-caption">
-                  <div>
-                    <strong data-i18n="windowDemoTitle">比赛历史与高光选择</strong>
-                    <span data-i18n="windowDemoCopy">从比赛列表进入模板预览和击杀事件选择。</span>
-                  </div>
-                  <span class="tag">DEMO</span>
-                </div>
-              </div>
-              <div class="mini-windows">
-                <div class="product-window">
-                  <img src="assets/screenshot-generating.png" alt="视频生成队列" />
-                  <div class="window-caption">
-                    <div>
-                      <strong data-i18n="windowQueueTitle">视频生成队列</strong>
-                      <span data-i18n="windowQueueCopy">跟踪分辨率、帧率、进度和任务状态。</span>
-                    </div>
-                    <span class="tag">QUEUE</span>
-                  </div>
-                </div>
-                <div class="product-window">
-                  <img src="assets/screenshot-map-detail.png" alt="地图复盘数据" />
-                  <div class="window-caption">
-                    <div>
-                      <strong data-i18n="windowCoachTitle">AI 训练参考</strong>
-                      <span data-i18n="windowCoachCopy">把地图表现转化为训练重点。</span>
-                    </div>
-                    <span class="tag">AI</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-        </section>
-
-        <section class="lab">
-          <div class="section-head">
-            <h2 data-i18n-html="labTitle">职业对比，<br /><span>不是资料堆叠。</span></h2>
-            <p data-i18n="labCopy">把玩家、职业选手和差距放在同一套视觉系统里，官网会更像高端软件，而不是截图说明书。</p>
-          </div>
-          <div class="lab-grid">
-            <div class="lab-card">
-              <h3 data-i18n="labPlayerTitle">你的档案</h3>
-              <p data-i18n="labPlayerCopy">个人表现、皮肤库存、外设和配置形成基础画像。</p>
-              <div class="metric-list">
-                <div class="metric"><span>ADR</span><b>79.3</b></div>
-                <div class="metric"><span>K/D</span><b>0.9</b></div>
-                <div class="metric"><span>Win Rate</span><b>40.3%</b></div>
-              </div>
-            </div>
-            <div class="lab-card center">
-              <h3 data-i18n="labCenterTitle">差距雷达</h3>
-              <p data-i18n="labCenterCopy">用统一指标呈现能力、皮肤、配置和外设相似度。</p>
-              <div class="radar-img">
-                <img src="assets/screenshot-pro-radar.png" alt="职业能力对比雷达" />
-              </div>
-            </div>
-            <div class="lab-card">
-              <h3 data-i18n="labProTitle">职业模板</h3>
-              <p data-i18n="labProCopy">职业选手的皮肤、硬件、准星和灵敏度成为可参考目标。</p>
-              <div class="metric-list">
-                <div class="metric"><span>Rating</span><b>1.33</b></div>
-                <div class="metric"><span>KAST</span><b>75.8%</b></div>
-                <div class="metric"><span>Gear</span><b>PRO</b></div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="workflow">
-          <div class="section-head">
-            <h2 data-i18n-html="workflowTitle">从 Demo 到<br /><span>可发布素材。</span></h2>
-            <p data-i18n="workflowCopy">用户只需要理解一条路径：导入比赛，分析表现，参考职业与 AI 建议，最后生成高光视频。</p>
-          </div>
-          <div class="pipeline">
-            <div class="step">
-              <b>1</b>
-              <strong data-i18n="step1Title">导入比赛</strong>
-              <span data-i18n="step1Copy">扫描本地文件夹或上传 demo，整理比赛历史。</span>
-            </div>
-            <div class="step">
-              <b>2</b>
-              <strong data-i18n="step2Title">分析个人档案</strong>
-              <span data-i18n="step2Copy">查看表现、地图、皮肤、外设和配置。</span>
-            </div>
-            <div class="step">
-              <b>3</b>
-              <strong data-i18n="step3Title">参考职业模板</strong>
-              <span data-i18n="step3Copy">查询职业选手装备、皮肤、准星和设置。</span>
-            </div>
-            <div class="step">
-              <b>4</b>
-              <strong data-i18n="step4Title">生成高光视频</strong>
-              <span data-i18n="step4Copy">选择关键回合，套用模板并输出素材。</span>
-            </div>
-          </div>
-        </section>
-
-        <section id="download" class="download">
-          <div class="download-panel">
-            <div>
-              <p class="eyebrow" data-i18n="downloadEyebrow">Windows Desktop</p>
-              <h2 data-i18n-html="downloadTitle">下载颗秒<br /><span>桌面端。</span></h2>
-              <p data-i18n="downloadCopy">
-                适用于 Windows 的 CS2 桌面助手。下载后即可整理比赛 demo、统计个人皮肤与外设、查询职业选手皮肤与硬件、使用 AI 教练复盘表现，并生成高光素材。
+              <h1 data-i18n="hero.title">颗秒</h1>
+              <p class="lead" data-i18n="hero.lead">
+                面向 CS2 玩家的桌面助手。导入比赛 demo 后，完成对局复盘、个人数据统计、皮肤外设整理、职业选手配置查询、AI 训练建议与高光视频生成。
               </p>
-              <div class="system-list" aria-label="System requirements">
-                <span>Windows 10+</span>
-                <span>CS2 Demo</span>
-                <span>Steam Profile</span>
-                <span>FFmpeg / HLAE</span>
+              <div class="hero-actions">
+                <a class="btn primary" href="#download" data-i18n="hero.ctaPrimary" data-track="hero_download"
+                  >立即下载</a
+                >
+                <a class="btn ghost" href="#command" data-i18n="hero.ctaSecondary" data-track="hero_explore"
+                  >查看产品能力</a
+                >
+              </div>
+              <div class="metric-strip" aria-label="Product metrics">
+                <div class="metric blue">
+                  <small data-i18n="hero.metric1Label">Demo Review</small>
+                  <strong>67</strong>
+                  <span data-i18n="hero.metric1Desc">matches indexed</span>
+                </div>
+                <div class="metric lime">
+                  <small data-i18n="hero.metric2Label">Inventory</small>
+                  <strong>$261</strong>
+                  <span data-i18n="hero.metric2Desc">skin value snapshot</span>
+                </div>
+                <div class="metric amber">
+                  <small data-i18n="hero.metric3Label">Pro Setup</small>
+                  <strong>Top 20</strong>
+                  <span data-i18n="hero.metric3Desc">player reference</span>
+                </div>
+                <div class="metric">
+                  <small data-i18n="hero.metric4Label">Highlight</small>
+                  <strong>16</strong>
+                  <span data-i18n="hero.metric4Desc">moments queued</span>
+                </div>
               </div>
             </div>
-            <a class="btn primary" href="#" data-track="download_windows_click" data-i18n="downloadButton">下载 Windows 版</a>
-          </div>
-          <div id="contact" class="contact-panel">
-            <div>
-              <strong data-i18n="contactTitle">需要帮助或合作？</strong>
-              <span data-i18n-html="contactCopy">
-                安装、使用、账号配置、视频生成或商务合作，请通过
-                <a class="email-link" href="mailto:support@onetap.cool" data-track="contact_email_click">support@onetap.cool</a>
-                联系我们。
-              </span>
+
+            <div class="hero-stage reveal" aria-label="OneTap product HUD">
+              <div class="stage-plate"></div>
+              <div class="brand-disc">
+                <img data-brand-logo src="assets/brand-onetap-zh.png" alt="OneTap icon" />
+              </div>
+              <div class="scan-window">
+                <img src="assets/screenshot-home-arsenal.png" alt="OneTap skin and gear overview" />
+                <div class="window-meta">
+                  <span data-i18n="hero.scanLabel">PERSONAL ARSENAL</span>
+                  <strong>$261.54</strong>
+                </div>
+              </div>
+              <div class="float-panel">
+                <img src="assets/screenshot-pro-radar.png" alt="OneTap professional player comparison" />
+                <div class="caption">
+                  <strong data-i18n="hero.floatTitle">Pro Ability Radar</strong>
+                  <span class="pill">ZywOo</span>
+                </div>
+              </div>
+              <div class="hud-chip one">
+                <small>ADR</small>
+                <strong>79.3</strong>
+              </div>
+              <div class="hud-chip two">
+                <small data-i18n="hero.chip2">Gear Match</small>
+                <strong>27%</strong>
+              </div>
+              <div class="hud-chip three">
+                <small data-i18n="hero.chip3">Render Queue</small>
+                <strong>0:30</strong>
+              </div>
             </div>
-            <a class="btn ghost" href="mailto:support@onetap.cool" data-track="contact_button_click" data-i18n="contactButton">发送邮件</a>
+          </div>
+        </section>
+
+        <section class="section tight">
+          <div class="wrap rail reveal">
+            <div class="rail-item">
+              <small>01</small>
+              <strong data-i18n="rail.oneTitle">Demo 复盘</strong>
+              <p data-i18n="rail.oneDesc">导入比赛 demo，沉淀地图、比分、击杀与回合片段。</p>
+            </div>
+            <div class="rail-item">
+              <small>02</small>
+              <strong data-i18n="rail.twoTitle">个人数据</strong>
+              <p data-i18n="rail.twoDesc">首页呈现胜率、ADR、K/D、残局与地图表现。</p>
+            </div>
+            <div class="rail-item">
+              <small>03</small>
+              <strong data-i18n="rail.threeTitle">皮肤外设</strong>
+              <p data-i18n="rail.threeDesc">整理个人库存、外设装备和职业选手对照。</p>
+            </div>
+            <div class="rail-item">
+              <small>04</small>
+              <strong data-i18n="rail.fourTitle">职业情报</strong>
+              <p data-i18n="rail.fourDesc">实时查询职业选手皮肤、硬件与配置参数。</p>
+            </div>
+            <div class="rail-item">
+              <small>05</small>
+              <strong data-i18n="rail.fiveTitle">AI 教练</strong>
+              <p data-i18n="rail.fiveDesc">把复盘数据转化为可执行的训练建议。</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="command" class="section">
+          <div class="wrap">
+            <div class="section-head reveal">
+              <div>
+                <p class="eyebrow" data-i18n="command.kicker">Personal Command Center</p>
+                <h2 data-i18n="command.title">首页不只是入口，而是你的 CS2 控制台。</h2>
+              </div>
+              <p class="copy" data-i18n="command.copy">
+                颗秒把个人数据、皮肤库存、Steam / Premier 分数、Faceit 信息、桌面外设与地图表现放在同一套暗色 HUD 中。玩家打开软件后，首先看到的是可用于复盘和决策的个人状态。
+              </p>
+            </div>
+
+            <div class="feature-stage">
+              <div class="command-surface reveal">
+                <div class="surface-shot primary">
+                  <img src="assets/screenshot-home-arsenal.png" alt="OneTap personal arsenal dashboard" />
+                </div>
+                <div class="surface-shot secondary">
+                  <img src="assets/screenshot-personal-data.png" alt="OneTap personal performance statistics" />
+                </div>
+                <div class="surface-shot tertiary">
+                  <img src="assets/screenshot-map-detail.png" alt="OneTap map detail modal" />
+                </div>
+                <div class="surface-label">
+                  <strong>44</strong>
+                  <span data-i18n="command.surface">skins indexed with value, rarity and wear state.</span>
+                </div>
+              </div>
+
+              <div class="module-stack reveal">
+                <article class="module">
+                  <small data-i18n="command.m1Kicker">Performance</small>
+                  <h3 data-i18n="command.m1Title">个人竞技表现</h3>
+                  <p class="copy" data-i18n="command.m1Desc">
+                    胜率、K/D、ADR、爆头率、残局数据和地图表现集中呈现，帮助玩家识别最需要改善的对局场景。
+                  </p>
+                </article>
+                <article class="module lime">
+                  <small data-i18n="command.m2Kicker">Inventory</small>
+                  <h3 data-i18n="command.m2Title">皮肤资产与外设档案</h3>
+                  <p class="copy" data-i18n="command.m2Desc">
+                    首页直接展示个人皮肤价值、重点武器、外设清单与配置状态，让玩家形成完整的装备画像。
+                  </p>
+                </article>
+                <article class="module amber">
+                  <small data-i18n="command.m3Kicker">Map Detail</small>
+                  <h3 data-i18n="command.m3Title">地图级复盘</h3>
+                  <p class="copy" data-i18n="command.m3Desc">
+                    以地图为单位聚合胜负、CT / T 侧表现、KAST、伤害压力和多杀率，给 AI 教练提供明确上下文。
+                  </p>
+                </article>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="intel" class="section">
+          <div class="wrap split">
+            <div class="story reveal">
+              <p class="eyebrow" data-i18n="intel.kicker">Pro Intelligence</p>
+              <h2 data-i18n="intel.title">把职业选手的配置、皮肤和硬件变成可查询资产。</h2>
+              <div class="story-row">
+                <span class="story-index">Skin</span>
+                <div>
+                  <h3 data-i18n="intel.s1Title">职业皮肤实时参考</h3>
+                  <p class="copy" data-i18n="intel.s1Desc">
+                    对比玩家库存与职业选手常用皮肤，展示磨损、品质、价格差异和武器类别。
+                  </p>
+                </div>
+              </div>
+              <div class="story-row">
+                <span class="story-index">Gear</span>
+                <div>
+                  <h3 data-i18n="intel.s2Title">硬件外设对照</h3>
+                  <p class="copy" data-i18n="intel.s2Desc">
+                    鼠标、键盘、耳机、显示器与鼠标垫按类别对比，让玩家知道自己和职业模板的差距。
+                  </p>
+                </div>
+              </div>
+              <div class="story-row">
+                <span class="story-index">Config</span>
+                <div>
+                  <h3 data-i18n="intel.s3Title">准星与参数复制</h3>
+                  <p class="copy" data-i18n="intel.s3Desc">
+                    配置、准星和视频参数可被整理为可恢复、可复制的参考方案，降低试错成本。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="intel-panel reveal">
+              <img src="assets/screenshot-gear-compare.png" alt="OneTap gear comparison" />
+              <div class="intel-overlay">
+                <div class="intel-stat">
+                  <small data-i18n="intel.stat1">Config Closeness</small>
+                  <strong>27%</strong>
+                </div>
+                <div class="intel-stat">
+                  <small data-i18n="intel.stat2">Skin Match</small>
+                  <strong>0%</strong>
+                </div>
+                <div class="intel-stat">
+                  <small data-i18n="intel.stat3">Ability Match</small>
+                  <strong>32%</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="wrap">
+            <div class="section-head reveal">
+              <div>
+                <p class="eyebrow" data-i18n="compare.kicker">Advanced Comparison</p>
+                <h2 data-i18n="compare.title">不止看数据，也看你和职业模板之间的具体差异。</h2>
+              </div>
+              <p class="copy" data-i18n="compare.copy">
+                皮肤、外设、配置与能力雷达被拆成多个可比较维度。每个维度都能指向具体物品或具体参数，而不是停留在笼统评分。
+              </p>
+            </div>
+            <div class="feature-stage">
+              <div class="wide-shot reveal">
+                <img src="assets/screenshot-skin-compare.png" alt="OneTap skin comparison" />
+                <div class="shot-caption">
+                  <span class="pill" data-i18n="compare.skinPill">Skin Intelligence</span>
+                  <h3 data-i18n="compare.skinTitle">玩家库存 vs 职业皮肤</h3>
+                  <p class="copy" data-i18n="compare.skinDesc">
+                    从武器类型、磨损、品质到参考价，快速看到自己的库存和职业选手之间的差距。
+                  </p>
+                </div>
+              </div>
+              <div class="module-stack reveal">
+                <article class="module violet">
+                  <small>Radar</small>
+                  <h3 data-i18n="compare.m1Title">能力雷达</h3>
+                  <p class="copy" data-i18n="compare.m1Desc">
+                    Rating、DPR、KAST、ADR、KPR 等关键指标与职业选手形成同屏对照。
+                  </p>
+                </article>
+                <article class="module">
+                  <small>Hardware</small>
+                  <h3 data-i18n="compare.m2Title">硬件参数</h3>
+                  <p class="copy" data-i18n="compare.m2Desc">
+                    DPI、回报率、传感器、连接方式、重量和尺寸等细项用于建立真实外设差异。
+                  </p>
+                </article>
+                <article class="module amber">
+                  <small>Reference</small>
+                  <h3 data-i18n="compare.m3Title">职业参考不是复制，而是校准</h3>
+                  <p class="copy" data-i18n="compare.m3Desc">
+                    颗秒把职业数据变成可理解的参照，帮助玩家判断哪些设置值得尝试，哪些差距需要训练解决。
+                  </p>
+                </article>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="studio" class="section">
+          <div class="wrap">
+            <div class="section-head reveal">
+              <div>
+                <p class="eyebrow" data-i18n="studio.kicker">Highlight Studio</p>
+                <h2 data-i18n="studio.title">从 demo 到可发布视频素材，缩短到一个工作流。</h2>
+              </div>
+              <p class="copy" data-i18n="studio.copy">
+                上传比赛或扫描 demo 文件夹，颗秒会列出比赛历史、高光击杀、关键回合和生成队列。玩家可以选择模板、预览效果并批量生成素材。
+              </p>
+            </div>
+
+            <div class="studio-grid">
+              <div class="wide-shot reveal">
+                <img src="assets/screenshot-match-history.png" alt="OneTap match history and highlight selection" />
+                <div class="shot-caption">
+                  <span class="pill" data-i18n="studio.pill">Match History</span>
+                  <h3 data-i18n="studio.captionTitle">选择回合，生成高光。</h3>
+                  <p class="copy" data-i18n="studio.captionDesc">
+                    比分、地图、击杀事件和模板预览集中在同一流程，减少剪辑前的整理成本。
+                  </p>
+                </div>
+              </div>
+              <div class="coach-board reveal">
+                <h3 data-i18n="studio.queueTitle">生成队列</h3>
+                <p class="copy" data-i18n="studio.queueCopy">
+                  任务状态、分辨率、帧率和进度清晰可见，适合批量处理整晚的 demo 素材。
+                </p>
+                <div class="queue">
+                  <div class="queue-row">
+                    <img src="assets/screenshot-generating.png" alt="" />
+                    <div>
+                      <strong>Overpass</strong>
+                      <span>1920x1080 · 60fps</span>
+                    </div>
+                    <span class="pill">Queued</span>
+                  </div>
+                  <div class="queue-row">
+                    <img src="assets/screenshot-generating.png" alt="" />
+                    <div>
+                      <strong>Nuke</strong>
+                      <span>Classic Scoreboard · 0:30</span>
+                    </div>
+                    <span class="pill">Queued</span>
+                  </div>
+                  <div class="queue-row">
+                    <img src="assets/screenshot-generating.png" alt="" />
+                    <div>
+                      <strong>Inferno</strong>
+                      <span>Quick Cut · HUD · Kill</span>
+                    </div>
+                    <span class="pill">Ready</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="coach" class="section">
+          <div class="wrap coach">
+            <div class="coach-board reveal">
+              <p class="eyebrow" data-i18n="coach.kicker">AI Coach</p>
+              <h2 data-i18n="coach.title">把赛后数据转化成下一次训练要做的事。</h2>
+              <p class="copy" data-i18n="coach.copy">
+                AI 教练结合 demo、地图表现、残局数据、职业模板差异和玩家装备档案，输出更接近实战的提升建议。
+              </p>
+              <div class="coach-list">
+                <div class="coach-item">
+                  <b>01</b>
+                  <div>
+                    <strong data-i18n="coach.item1Title">优先处理弱地图</strong>
+                    <p data-i18n="coach.item1Desc">根据地图胜率、CT / T 侧表现和回合样本，定位最需要复盘的地图。</p>
+                  </div>
+                </div>
+                <div class="coach-item">
+                  <b>02</b>
+                  <div>
+                    <strong data-i18n="coach.item2Title">定位关键数据差距</strong>
+                    <p data-i18n="coach.item2Desc">把 ADR、DPR、KAST、KPR 等指标与职业模板对照，识别影响胜率的短板。</p>
+                  </div>
+                </div>
+                <div class="coach-item">
+                  <b>03</b>
+                  <div>
+                    <strong data-i18n="coach.item3Title">形成训练建议</strong>
+                    <p data-i18n="coach.item3Desc">建议围绕站位、补枪、残局、道具和配置调整展开，直接服务下一场对局。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="report-panel reveal">
+              <img src="assets/screenshot-map-detail.png" alt="OneTap map performance detail" />
+              <div class="report-data">
+                <div class="metric blue">
+                  <small>KAST</small>
+                  <strong>70.8%</strong>
+                  <span data-i18n="coach.metric1">round impact</span>
+                </div>
+                <div class="metric amber">
+                  <small>K/D</small>
+                  <strong>0.94</strong>
+                  <span data-i18n="coach.metric2">duel efficiency</span>
+                </div>
+                <div class="metric">
+                  <small data-i18n="coach.metric3Label">Win Rate</small>
+                  <strong>50%</strong>
+                  <span data-i18n="coach.metric3">map trend</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="download" class="section download">
+          <div class="wrap download-panel reveal">
+            <div>
+              <p class="eyebrow" data-i18n="download.kicker">Download</p>
+              <h2 data-i18n="download.title">为 CS2 玩家准备的正式官网入口。</h2>
+              <p class="lead" data-i18n="download.copy">
+                下载颗秒桌面助手，导入 demo，连接个人库存与外设档案，用职业选手数据和 AI 教练重新审视每一场比赛。
+              </p>
+              <div class="download-actions">
+                <a
+                  class="btn primary"
+                  href="https://github.com/survwyy/cs2zs/releases"
+                  target="_blank"
+                  rel="noopener"
+                  data-i18n="download.primary"
+                  data-track="download_release"
+                  >下载 Windows 版本</a
+                >
+                <a class="btn ghost" href="mailto:support@onetap.cool" data-i18n="download.contact" data-track="contact_mail"
+                  >联系我们</a
+                >
+              </div>
+            </div>
+            <aside class="contact">
+              <small data-i18n="download.supportLabel">Support</small>
+              <a href="mailto:support@onetap.cool" data-track="support_email">support@onetap.cool</a>
+              <p class="copy" style="margin-top: 14px" data-i18n="download.supportCopy">
+                商务合作、问题反馈、下载支持和媒体素材请求都可以通过该邮箱联系。
+              </p>
+            </aside>
           </div>
         </section>
       </main>
 
-      <footer class="footer">
-        <span data-i18n="footerProduct">颗秒 OneTap CS2 Desktop Assistant</span>
-        <span>support@onetap.cool</span>
+      <footer>
+        <div class="wrap">
+          <span data-i18n="footer.left">© 2026 OneTap / 颗秒. All rights reserved.</span>
+          <span data-i18n="footer.right">CS2 demo review · pro setup · highlight studio</span>
+        </div>
       </footer>
     </div>
 
     <script>
       const i18n = {
         zh: {
-          documentTitle: "颗秒 OneTap - CS2 桌面助手官网",
-          brandName: "颗秒",
-          brandLogo: "assets/brand-onetap-zh.png",
-          brandAlt: "颗秒中文图标",
-          brandSub: "CS2 桌面助手",
-          navCapabilities: "能力",
-          navProduct: "产品",
-          navWorkflow: "流程",
-          navContact: "联系",
-          navDownload: "下载",
-          heroEyebrow: "CS2 复盘、装备统计与高光生成",
-          heroTitle:
-            '为 CS2 玩家<span class="mobile-break"><br /></span>打造的<br /><span>复盘与<span class="mobile-break"><br /></span>装备工作台。</span>',
-          heroCopy:
-            "颗秒把比赛 demo、个人竞技数据、<br />皮肤外设和职业选手参考，集中到一个桌面工作台。<br />通过 AI 教练和高光生成，让每一场对局都变成可复盘、可提升、可发布的素材。",
-          heroDownload: "下载 Windows 版",
-          heroProduct: "查看产品界面",
-          proofDemo: "比赛复盘",
-          proofGear: "皮肤外设统计",
-          proofAi: "训练建议与高光生成",
-          stageCardTitle: "职业能力雷达",
-          stageCardCopy: "用职业模板校准自己的表现差距。",
-          stageChipTitle: "首页就是你的 CS2 档案",
-          stageChipCopy: "皮肤库存、外设、Steam Rating 和高价值物品在同一处呈现。",
-          capTitle: "不是工具列表，<br /><span>是玩家工作台。</span>",
-          capCopy:
-            "官网把产品能力压缩成四个清晰场景：复盘比赛、整理装备、参考职业、输出内容。每个场景都服务于 CS2 玩家最常见的提升路径。",
-          cap1Title: "复盘每一场比赛",
-          cap1Copy: "导入 demo 后查看比分、地图、击杀、残局和单地图表现，快速定位下一步训练方向。",
-          cap2Title: "统计皮肤与外设",
-          cap2Copy: "把库存价值、皮肤数量、高价值物品、鼠标键盘显示器等设备资料变成个人档案。",
-          cap3Title: "对比职业选手",
-          cap3Copy: "实时查询职业选手皮肤、硬件、准星、灵敏度和配置，并与个人数据形成对照。",
-          cap4Title: "AI 教练与高光",
-          cap4Copy: "基于表现趋势给出训练建议，把关键回合加入队列，生成适合发布的视频素材。",
-          productTitle: "真实界面，<br /><span>作为产品证据。</span>",
-          productCopy: "截图不再平铺，而是成为能力分镜。每一组界面只证明一个核心价值，让用户快速理解为什么要下载。",
-          story1Eyebrow: "Personal Command Center",
-          story1Title: "首页即个人<br /><span>CS2 档案。</span>",
-          story1Copy:
-            "玩家打开软件后先看到自己的库存、皮肤数量、高价值物品、Steam Rating 和桌面设备，官网首屏应该放大这种“属于我的工作台”感受。",
-          story1Bullet1: "库存价值、皮肤数量和高价值物品形成资产视图。",
-          story1Bullet2: "个人外设和设备资料让玩家看到完整配置档案。",
-          story1Bullet3: "个人数据页补充胜率、残局、ADR、地图表现。",
-          windowHomeTitle: "首页资产与外设",
-          windowHomeCopy: "把皮肤、库存价值、Steam Rating 和设备信息集中呈现。",
-          windowDataTitle: "个人竞技数据",
-          windowDataCopy: "胜率、残局、K/D、ADR 和地图表现。",
-          windowMapTitle: "地图详情复盘",
-          windowMapCopy: "按地图拆解胜负、CT/T 表现和多杀数据。",
-          story2Eyebrow: "Pro Comparison Lab",
-          story2Title: "把职业模板变成<br /><span>可参考的配置。</span>",
-          story2Copy:
-            "职业选手内容不是简单资料库，而是和玩家自己的数据、皮肤、外设、准星、灵敏度进行对比，形成可以执行的参考。",
-          story2Bullet1: "能力雷达呈现个人表现和职业模板的差距。",
-          story2Bullet2: "皮肤对比覆盖磨损、品质和参考价格。",
-          story2Bullet3: "外设与配置对比支持复制职业设置。",
-          windowProTitle: "职业能力雷达",
-          windowProCopy: "用 Rating、DPR、KAST、ADR、KPR 对比个人表现和职业模板。",
-          windowSkinTitle: "皮肤进阶对比",
-          windowSkinCopy: "对比个人库存与职业选手皮肤。",
-          windowGearTitle: "外设与配置对比",
-          windowGearCopy: "覆盖鼠标、键盘、显示器和准星。",
-          story3Eyebrow: "Demo To Publish",
-          story3Title: "从比赛文件到<br /><span>可发布素材。</span>",
-          story3Copy:
-            "高光生成是转化点。官网需要让用户看到：导入 demo 后可以选择比赛、模板和击杀事件，最后进入可控的生成队列。",
-          story3Bullet1: "比赛历史页负责选择 demo、模板和关键事件。",
-          story3Bullet2: "生成队列展示排队、运行、失败和进度状态。",
-          story3Bullet3: "AI 教练建议补充“为什么要剪这场”的训练价值。",
-          windowDemoTitle: "比赛历史与高光选择",
-          windowDemoCopy: "从比赛列表进入模板预览和击杀事件选择。",
-          windowQueueTitle: "视频生成队列",
-          windowQueueCopy: "跟踪分辨率、帧率、进度和任务状态。",
-          windowCoachTitle: "AI 训练参考",
-          windowCoachCopy: "把地图表现转化为训练重点。",
-          labTitle: "职业对比，<br /><span>不是资料堆叠。</span>",
-          labCopy: "把玩家、职业选手和差距放在同一套视觉系统里，官网会更像高端软件，而不是截图说明书。",
-          labPlayerTitle: "你的档案",
-          labPlayerCopy: "个人表现、皮肤库存、外设和配置形成基础画像。",
-          labCenterTitle: "差距雷达",
-          labCenterCopy: "用统一指标呈现能力、皮肤、配置和外设相似度。",
-          labProTitle: "职业模板",
-          labProCopy: "职业选手的皮肤、硬件、准星和灵敏度成为可参考目标。",
-          workflowTitle: "从 Demo 到<br /><span>可发布素材。</span>",
-          workflowCopy: "用户只需要理解一条路径：导入比赛，分析表现，参考职业与 AI 建议，最后生成高光视频。",
-          step1Title: "导入比赛",
-          step1Copy: "扫描本地文件夹或上传 demo，整理比赛历史。",
-          step2Title: "分析个人档案",
-          step2Copy: "查看表现、地图、皮肤、外设和配置。",
-          step3Title: "参考职业模板",
-          step3Copy: "查询职业选手装备、皮肤、准星和设置。",
-          step4Title: "生成高光视频",
-          step4Copy: "选择关键回合，套用模板并输出素材。",
-          downloadEyebrow: "Windows Desktop",
-          downloadTitle: "下载颗秒<br /><span>桌面端。</span>",
-          downloadCopy:
-            "适用于 Windows 的 CS2 桌面助手。下载后即可整理比赛 demo、统计个人皮肤与外设、查询职业选手皮肤与硬件、使用 AI 教练复盘表现，并生成高光素材。",
-          downloadButton: "下载 Windows 版",
-          contactTitle: "需要帮助或合作？",
-          contactCopy:
-            '安装、使用、账号配置、视频生成或商务合作，请通过 <a class="email-link" href="mailto:support@onetap.cool" data-track="contact_email_click">support@onetap.cool</a> 联系我们。',
-          contactButton: "发送邮件",
-          footerProduct: "颗秒 OneTap CS2 Desktop Assistant",
+          "brand.name": "颗秒",
+          "brand.tag": "CS2 Desktop Studio",
+          "nav.command": "个人中心",
+          "nav.intel": "职业情报",
+          "nav.studio": "高光生成",
+          "nav.coach": "AI 教练",
+          "nav.download": "下载",
+          "hero.kicker": "CS2 Desktop Command Center",
+          "hero.version": "Official Website Preview",
+          "hero.title": "颗秒",
+          "hero.lead":
+            "面向 CS2 玩家的桌面助手。导入比赛 demo 后，完成对局复盘、个人数据统计、皮肤外设整理、职业选手配置查询、AI 训练建议与高光视频生成。",
+          "hero.ctaPrimary": "立即下载",
+          "hero.ctaSecondary": "查看产品能力",
+          "hero.metric1Label": "Demo Review",
+          "hero.metric1Desc": "matches indexed",
+          "hero.metric2Label": "Inventory",
+          "hero.metric2Desc": "skin value snapshot",
+          "hero.metric3Label": "Pro Setup",
+          "hero.metric3Desc": "player reference",
+          "hero.metric4Label": "Highlight",
+          "hero.metric4Desc": "moments queued",
+          "hero.scanLabel": "PERSONAL ARSENAL",
+          "hero.floatTitle": "职业能力雷达",
+          "hero.chip2": "外设接近度",
+          "hero.chip3": "生成队列",
+          "rail.oneTitle": "Demo 复盘",
+          "rail.oneDesc": "导入比赛 demo，沉淀地图、比分、击杀与回合片段。",
+          "rail.twoTitle": "个人数据",
+          "rail.twoDesc": "首页呈现胜率、ADR、K/D、残局与地图表现。",
+          "rail.threeTitle": "皮肤外设",
+          "rail.threeDesc": "整理个人库存、外设装备和职业选手对照。",
+          "rail.fourTitle": "职业情报",
+          "rail.fourDesc": "实时查询职业选手皮肤、硬件与配置参数。",
+          "rail.fiveTitle": "AI 教练",
+          "rail.fiveDesc": "把复盘数据转化为可执行的训练建议。",
+          "command.kicker": "Personal Command Center",
+          "command.title": "首页不只是入口，而是你的 CS2 控制台。",
+          "command.copy":
+            "颗秒把个人数据、皮肤库存、Steam / Premier 分数、Faceit 信息、桌面外设与地图表现放在同一套暗色 HUD 中。玩家打开软件后，首先看到的是可用于复盘和决策的个人状态。",
+          "command.surface": "件皮肤已建立价值、稀有度与磨损状态索引。",
+          "command.m1Kicker": "Performance",
+          "command.m1Title": "个人竞技表现",
+          "command.m1Desc":
+            "胜率、K/D、ADR、爆头率、残局数据和地图表现集中呈现，帮助玩家识别最需要改善的对局场景。",
+          "command.m2Kicker": "Inventory",
+          "command.m2Title": "皮肤资产与外设档案",
+          "command.m2Desc":
+            "首页直接展示个人皮肤价值、重点武器、外设清单与配置状态，让玩家形成完整的装备画像。",
+          "command.m3Kicker": "Map Detail",
+          "command.m3Title": "地图级复盘",
+          "command.m3Desc":
+            "以地图为单位聚合胜负、CT / T 侧表现、KAST、伤害压力和多杀率，给 AI 教练提供明确上下文。",
+          "intel.kicker": "Pro Intelligence",
+          "intel.title": "把职业选手的配置、皮肤和硬件变成可查询资产。",
+          "intel.s1Title": "职业皮肤实时参考",
+          "intel.s1Desc": "对比玩家库存与职业选手常用皮肤，展示磨损、品质、价格差异和武器类别。",
+          "intel.s2Title": "硬件外设对照",
+          "intel.s2Desc": "鼠标、键盘、耳机、显示器与鼠标垫按类别对比，让玩家知道自己和职业模板的差距。",
+          "intel.s3Title": "准星与参数复制",
+          "intel.s3Desc": "配置、准星和视频参数可被整理为可恢复、可复制的参考方案，降低试错成本。",
+          "intel.stat1": "配置接近度",
+          "intel.stat2": "皮肤匹配率",
+          "intel.stat3": "能力接近度",
+          "compare.kicker": "Advanced Comparison",
+          "compare.title": "不止看数据，也看你和职业模板之间的具体差异。",
+          "compare.copy":
+            "皮肤、外设、配置与能力雷达被拆成多个可比较维度。每个维度都能指向具体物品或具体参数，而不是停留在笼统评分。",
+          "compare.skinPill": "皮肤情报",
+          "compare.skinTitle": "玩家库存 vs 职业皮肤",
+          "compare.skinDesc": "从武器类型、磨损、品质到参考价，快速看到自己的库存和职业选手之间的差距。",
+          "compare.m1Title": "能力雷达",
+          "compare.m1Desc": "Rating、DPR、KAST、ADR、KPR 等关键指标与职业选手形成同屏对照。",
+          "compare.m2Title": "硬件参数",
+          "compare.m2Desc": "DPI、回报率、传感器、连接方式、重量和尺寸等细项用于建立真实外设差异。",
+          "compare.m3Title": "职业参考不是复制，而是校准",
+          "compare.m3Desc": "颗秒把职业数据变成可理解的参照，帮助玩家判断哪些设置值得尝试，哪些差距需要训练解决。",
+          "studio.kicker": "Highlight Studio",
+          "studio.title": "从 demo 到可发布视频素材，缩短到一个工作流。",
+          "studio.copy":
+            "上传比赛或扫描 demo 文件夹，颗秒会列出比赛历史、高光击杀、关键回合和生成队列。玩家可以选择模板、预览效果并批量生成素材。",
+          "studio.pill": "比赛历史",
+          "studio.captionTitle": "选择回合，生成高光。",
+          "studio.captionDesc": "比分、地图、击杀事件和模板预览集中在同一流程，减少剪辑前的整理成本。",
+          "studio.queueTitle": "生成队列",
+          "studio.queueCopy": "任务状态、分辨率、帧率和进度清晰可见，适合批量处理整晚的 demo 素材。",
+          "coach.kicker": "AI Coach",
+          "coach.title": "把赛后数据转化成下一次训练要做的事。",
+          "coach.copy":
+            "AI 教练结合 demo、地图表现、残局数据、职业模板差异和玩家装备档案，输出更接近实战的提升建议。",
+          "coach.item1Title": "优先处理弱地图",
+          "coach.item1Desc": "根据地图胜率、CT / T 侧表现和回合样本，定位最需要复盘的地图。",
+          "coach.item2Title": "定位关键数据差距",
+          "coach.item2Desc": "把 ADR、DPR、KAST、KPR 等指标与职业模板对照，识别影响胜率的短板。",
+          "coach.item3Title": "形成训练建议",
+          "coach.item3Desc": "建议围绕站位、补枪、残局、道具和配置调整展开，直接服务下一场对局。",
+          "coach.metric1": "回合影响",
+          "coach.metric2": "对枪效率",
+          "coach.metric3Label": "胜率",
+          "coach.metric3": "地图趋势",
+          "download.kicker": "Download",
+          "download.title": "为 CS2 玩家准备的正式官网入口。",
+          "download.copy":
+            "下载颗秒桌面助手，导入 demo，连接个人库存与外设档案，用职业选手数据和 AI 教练重新审视每一场比赛。",
+          "download.primary": "下载 Windows 版本",
+          "download.contact": "联系我们",
+          "download.supportLabel": "Support",
+          "download.supportCopy": "商务合作、问题反馈、下载支持和媒体素材请求都可以通过该邮箱联系。",
+          "footer.left": "© 2026 OneTap / 颗秒. All rights reserved.",
+          "footer.right": "CS2 demo review · pro setup · highlight studio",
         },
         en: {
-          documentTitle: "OneTap - CS2 Desktop Assistant",
-          brandName: "OneTap",
-          brandLogo: "assets/brand-onetap-en.png",
-          brandAlt: "OneTap English icon",
-          brandSub: "CS2 Desktop Assistant",
-          navCapabilities: "Capabilities",
-          navProduct: "Product",
-          navWorkflow: "Workflow",
-          navContact: "Contact",
-          navDownload: "Download",
-          heroEyebrow: "CS2 review, gear stats, and highlight generation",
-          heroTitle: "The CS2 workspace for <span>review, gear, and highlights.</span>",
-          heroCopy:
-            "OneTap brings match demos, personal performance data, skins, peripherals, and pro references into one desktop workspace.<br />AI coaching and highlight generation turn every match into reviewable, improvable, publishable material.",
-          heroDownload: "Download for Windows",
-          heroProduct: "View product interface",
-          proofDemo: "Match review",
-          proofGear: "Skins and peripherals",
-          proofAi: "Coaching and highlights",
-          stageCardTitle: "Pro ability radar",
-          stageCardCopy: "Calibrate your performance gap against pro templates.",
-          stageChipTitle: "Your CS2 profile starts at home",
-          stageChipCopy: "Skins, peripherals, Steam Rating, and high-value items in one place.",
-          capTitle: "Not a tool list,<br /><span>a player workspace.</span>",
-          capCopy:
-            "The homepage compresses the product into four clear scenarios: review matches, organize gear, reference pros, and publish content. Each scene serves a common CS2 improvement path.",
-          cap1Title: "Review every match",
-          cap1Copy: "Import demos, inspect score, map, kills, clutches, and map-level data to locate the next training focus.",
-          cap2Title: "Track skins and peripherals",
-          cap2Copy: "Turn inventory value, skin count, high-value items, mouse, keyboard, and monitor data into a personal profile.",
-          cap3Title: "Compare with pros",
-          cap3Copy: "Look up pro skins, hardware, crosshair, sensitivity, and config in real time, then compare them with your data.",
-          cap4Title: "AI coach and highlights",
-          cap4Copy: "Use performance trends for training suggestions, queue key rounds, and generate clips ready to publish.",
-          productTitle: "Real interface,<br /><span>real product proof.</span>",
-          productCopy: "Screenshots become product scenes instead of a flat gallery. Each group proves one core value so users understand why to download.",
-          story1Eyebrow: "Personal Command Center",
-          story1Title: "Home becomes your<br /><span>CS2 profile.</span>",
-          story1Copy:
-            "Players first see their inventory, skin count, high-value items, Steam Rating, and desk setup. The website should amplify that personal workspace feeling.",
-          story1Bullet1: "Inventory value, skin count, and high-value items form an asset view.",
-          story1Bullet2: "Peripheral and device records make the profile complete.",
-          story1Bullet3: "The data page adds win rate, clutches, ADR, and map performance.",
-          windowHomeTitle: "Home assets and peripherals",
-          windowHomeCopy: "Skins, inventory value, Steam Rating, and devices in one surface.",
-          windowDataTitle: "Personal performance data",
-          windowDataCopy: "Win rate, clutches, K/D, ADR, and map performance.",
-          windowMapTitle: "Map detail review",
-          windowMapCopy: "Break down wins, CT/T profiles, and multi-kill data by map.",
-          story2Eyebrow: "Pro Comparison Lab",
-          story2Title: "Turn pro templates into<br /><span>actionable reference.</span>",
-          story2Copy:
-            "Pro content is not just a database. It compares your data, skins, peripherals, crosshair, and sensitivity with pro setups for practical decisions.",
-          story2Bullet1: "Ability radar shows the gap between personal data and pro templates.",
-          story2Bullet2: "Skin comparison covers wear, quality, and reference price.",
-          story2Bullet3: "Gear and config comparison supports copying pro settings.",
-          windowProTitle: "Pro ability radar",
-          windowProCopy: "Compare Rating, DPR, KAST, ADR, and KPR against a pro template.",
-          windowSkinTitle: "Advanced skin comparison",
-          windowSkinCopy: "Compare your inventory with pro player skins.",
-          windowGearTitle: "Gear and config comparison",
-          windowGearCopy: "Cover mouse, keyboard, monitor, and crosshair settings.",
-          story3Eyebrow: "Demo To Publish",
-          story3Title: "From match file to<br /><span>publishable material.</span>",
-          story3Copy:
-            "Highlight generation is the conversion point. Users should see that importing a demo leads to match selection, templates, kill events, and a controlled render queue.",
-          story3Bullet1: "Match history selects demos, templates, and key events.",
-          story3Bullet2: "The queue shows pending, running, failed, and progress states.",
-          story3Bullet3: "AI coaching adds training value to what gets clipped.",
-          windowDemoTitle: "Match history and highlight picks",
-          windowDemoCopy: "Move from match list into template preview and kill event selection.",
-          windowQueueTitle: "Video generation queue",
-          windowQueueCopy: "Track resolution, frame rate, progress, and task status.",
-          windowCoachTitle: "AI training reference",
-          windowCoachCopy: "Turn map performance into training priorities.",
-          labTitle: "Pro comparison,<br /><span>not data dumping.</span>",
-          labCopy: "Player, pro, and gap signals share one visual system, making the homepage feel like premium software instead of a screenshot manual.",
-          labPlayerTitle: "Your profile",
-          labPlayerCopy: "Performance, skins, peripherals, and config form the baseline profile.",
-          labCenterTitle: "Gap radar",
-          labCenterCopy: "Use consistent metrics for ability, skins, config, and gear similarity.",
-          labProTitle: "Pro template",
-          labProCopy: "Pro skins, hardware, crosshair, and sensitivity become the reference target.",
-          workflowTitle: "From demo to<br /><span>publishable clips.</span>",
-          workflowCopy: "Users only need one path: import matches, analyze performance, reference pros and AI guidance, then export highlights.",
-          step1Title: "Import matches",
-          step1Copy: "Scan a local folder or upload demos, then organize match history.",
-          step2Title: "Analyze your profile",
-          step2Copy: "Review performance, maps, skins, peripherals, and settings.",
-          step3Title: "Reference pro templates",
-          step3Copy: "Check pro gear, skins, crosshair, and settings.",
-          step4Title: "Generate highlights",
-          step4Copy: "Select key rounds, apply templates, and export content.",
-          downloadEyebrow: "Windows Desktop",
-          downloadTitle: "Download<br /><span>OneTap Desktop.</span>",
-          downloadCopy:
-            "A Windows desktop assistant for CS2 demo review, personal skin and peripheral stats, pro skins and hardware lookup, AI coaching, performance tracking, and highlight generation.",
-          downloadButton: "Download for Windows",
-          contactTitle: "Need support or partnership?",
-          contactCopy:
-            'For installation, usage, account setup, video generation, or business inquiries, contact us at <a class="email-link" href="mailto:support@onetap.cool" data-track="contact_email_click">support@onetap.cool</a>.',
-          contactButton: "Email support",
-          footerProduct: "OneTap CS2 Desktop Assistant",
+          "brand.name": "OneTap",
+          "brand.tag": "CS2 Desktop Studio",
+          "nav.command": "Command",
+          "nav.intel": "Pro Intel",
+          "nav.studio": "Highlights",
+          "nav.coach": "AI Coach",
+          "nav.download": "Download",
+          "hero.kicker": "CS2 Desktop Command Center",
+          "hero.version": "Official Website Preview",
+          "hero.title": "OneTap",
+          "hero.lead":
+            "A desktop assistant for CS2 players. Import match demos, review performance, organize skins and gear, query pro player setups, get AI coaching signals, and generate publish-ready highlight clips.",
+          "hero.ctaPrimary": "Download now",
+          "hero.ctaSecondary": "Explore features",
+          "hero.metric1Label": "Demo Review",
+          "hero.metric1Desc": "matches indexed",
+          "hero.metric2Label": "Inventory",
+          "hero.metric2Desc": "skin value snapshot",
+          "hero.metric3Label": "Pro Setup",
+          "hero.metric3Desc": "player reference",
+          "hero.metric4Label": "Highlight",
+          "hero.metric4Desc": "moments queued",
+          "hero.scanLabel": "PERSONAL ARSENAL",
+          "hero.floatTitle": "Pro Ability Radar",
+          "hero.chip2": "Gear Match",
+          "hero.chip3": "Render Queue",
+          "rail.oneTitle": "Demo Review",
+          "rail.oneDesc": "Import match demos and structure maps, scores, kills and round moments.",
+          "rail.twoTitle": "Personal Data",
+          "rail.twoDesc": "Track win rate, ADR, K/D, clutch data and map performance from home.",
+          "rail.threeTitle": "Skins & Gear",
+          "rail.threeDesc": "Organize inventory, desktop gear and pro player comparisons.",
+          "rail.fourTitle": "Pro Intel",
+          "rail.fourDesc": "Query pro player skins, hardware and configuration details in real time.",
+          "rail.fiveTitle": "AI Coach",
+          "rail.fiveDesc": "Turn review data into actionable training direction.",
+          "command.kicker": "Personal Command Center",
+          "command.title": "The home screen becomes your CS2 control center.",
+          "command.copy":
+            "OneTap brings personal stats, skin inventory, Steam / Premier rating, Faceit context, desk setup and map performance into one dark HUD. The first screen gives players a usable profile for review and decisions.",
+          "command.surface": "skins indexed with value, rarity and wear state.",
+          "command.m1Kicker": "Performance",
+          "command.m1Title": "Personal performance",
+          "command.m1Desc":
+            "Win rate, K/D, ADR, headshot rate, clutch data and map performance are surfaced together to show which match situations need work.",
+          "command.m2Kicker": "Inventory",
+          "command.m2Title": "Skin assets and gear profile",
+          "command.m2Desc":
+            "The home screen presents skin value, key weapons, gear lists and configuration state so players can understand their complete setup.",
+          "command.m3Kicker": "Map Detail",
+          "command.m3Title": "Map-level review",
+          "command.m3Desc":
+            "Map results, CT / T-side profile, KAST, damage pressure and multi-kill rate provide clear context for AI coaching.",
+          "intel.kicker": "Pro Intelligence",
+          "intel.title": "Make pro player configs, skins and hardware searchable.",
+          "intel.s1Title": "Live pro skin references",
+          "intel.s1Desc": "Compare player inventory with pro skins across wear, rarity, reference price and weapon type.",
+          "intel.s2Title": "Hardware comparison",
+          "intel.s2Desc": "Compare mouse, keyboard, headset, monitor and mousepad categories against a pro template.",
+          "intel.s3Title": "Crosshair and config copy",
+          "intel.s3Desc": "Configs, crosshairs and video parameters can be restored or copied as practical references.",
+          "intel.stat1": "Config Closeness",
+          "intel.stat2": "Skin Match",
+          "intel.stat3": "Ability Match",
+          "compare.kicker": "Advanced Comparison",
+          "compare.title": "Go beyond scores and see the exact gaps against a pro template.",
+          "compare.copy":
+            "Skins, gear, configs and ability radar are split into comparable dimensions. Each dimension points to concrete items or settings, not a vague score.",
+          "compare.skinPill": "Skin Intelligence",
+          "compare.skinTitle": "Player inventory vs pro skins",
+          "compare.skinDesc": "From weapon type, wear and rarity to reference value, the gap between your inventory and pro player skins becomes visible.",
+          "compare.m1Title": "Ability radar",
+          "compare.m1Desc": "Rating, DPR, KAST, ADR and KPR are compared with a pro player on the same surface.",
+          "compare.m2Title": "Hardware details",
+          "compare.m2Desc": "DPI, polling rate, sensor, connection, weight and dimensions make gear differences concrete.",
+          "compare.m3Title": "Pro reference is calibration",
+          "compare.m3Desc": "OneTap turns pro data into understandable context so players know what to try and what needs practice.",
+          "studio.kicker": "Highlight Studio",
+          "studio.title": "Move from demo to publish-ready video material in one workflow.",
+          "studio.copy":
+            "Upload a match or scan a demo folder. OneTap lists match history, highlight kills, key rounds and render tasks, then lets players preview templates and batch-generate clips.",
+          "studio.pill": "Match History",
+          "studio.captionTitle": "Select rounds. Generate highlights.",
+          "studio.captionDesc": "Scores, maps, kill events and template previews stay in one flow, reducing pre-edit cleanup work.",
+          "studio.queueTitle": "Generation queue",
+          "studio.queueCopy": "Task state, resolution, frame rate and progress stay visible for batch processing a full night of demos.",
+          "coach.kicker": "AI Coach",
+          "coach.title": "Turn post-match data into the next training task.",
+          "coach.copy":
+            "AI coaching combines demos, map performance, clutch data, pro template gaps and player gear context to produce more practical improvement signals.",
+          "coach.item1Title": "Prioritize weak maps",
+          "coach.item1Desc": "Use map win rate, CT / T-side profile and round samples to locate the map that needs review first.",
+          "coach.item2Title": "Identify metric gaps",
+          "coach.item2Desc": "Compare ADR, DPR, KAST and KPR against pro references to see what is affecting win rate.",
+          "coach.item3Title": "Create training direction",
+          "coach.item3Desc": "Suggestions focus on positioning, trading, clutch decisions, utility and config adjustments for the next match.",
+          "coach.metric1": "round impact",
+          "coach.metric2": "duel efficiency",
+          "coach.metric3Label": "Win Rate",
+          "coach.metric3": "map trend",
+          "download.kicker": "Download",
+          "download.title": "The official entry point for CS2 players.",
+          "download.copy":
+            "Download OneTap, import demos, connect inventory and gear context, then review every match with pro data and AI coaching.",
+          "download.primary": "Download for Windows",
+          "download.contact": "Contact us",
+          "download.supportLabel": "Support",
+          "download.supportCopy": "Business, feedback, download support and media requests can all be sent to this mailbox.",
+          "footer.left": "© 2026 OneTap / 颗秒. All rights reserved.",
+          "footer.right": "CS2 demo review · pro setup · highlight studio",
         },
       };
 
-      const state = { lang: "zh" };
+      const brandLogo = {
+        zh: "assets/brand-onetap-zh.png",
+        en: "assets/brand-onetap-en.png",
+      };
 
-      function track(eventName, payload = {}) {
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-          event: eventName,
-          language: state.lang,
-          page: "onetap_official_home",
+      const html = document.documentElement;
+      const logoNodes = document.querySelectorAll("[data-brand-logo]");
+      const langButtons = document.querySelectorAll("[data-lang]");
+      const translateNodes = document.querySelectorAll("[data-i18n]");
+      const initialLang = localStorage.getItem("onetap-lang") || "zh";
+
+      window.dataLayer = window.dataLayer || [];
+
+      function track(event, payload = {}) {
+        const data = {
+          event,
+          page: "official_home_hud",
           timestamp: new Date().toISOString(),
           ...payload,
-        });
+        };
+        window.dataLayer.push(data);
+        window.dispatchEvent(new CustomEvent("onetap:analytics", { detail: data }));
       }
 
-      function setLanguage(lang, shouldTrack = true) {
-        const dict = i18n[lang];
-        state.lang = lang;
-        document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
-        document.title = dict.documentTitle;
-        document.getElementById("brandName").textContent = dict.brandName;
-        const logo = document.getElementById("brandLogo");
-        logo.src = dict.brandLogo;
-        logo.alt = dict.brandAlt;
-
-        document.querySelectorAll("[data-i18n]").forEach((node) => {
+      function setLanguage(lang) {
+        const dictionary = i18n[lang] || i18n.zh;
+        translateNodes.forEach((node) => {
           const key = node.getAttribute("data-i18n");
-          if (dict[key]) node.textContent = dict[key];
+          if (dictionary[key]) node.textContent = dictionary[key];
         });
-
-        document.querySelectorAll("[data-i18n-html]").forEach((node) => {
-          const key = node.getAttribute("data-i18n-html");
-          if (dict[key]) node.innerHTML = dict[key];
+        logoNodes.forEach((node) => {
+          node.src = brandLogo[lang];
+          node.alt = lang === "zh" ? "颗秒 OneTap" : "OneTap";
         });
-
-        document.querySelectorAll("[data-lang]").forEach((button) => {
-          button.classList.toggle("active", button.dataset.lang === lang);
+        langButtons.forEach((button) => {
+          button.classList.toggle("is-active", button.getAttribute("data-lang") === lang);
         });
-
-        if (shouldTrack) track("language_switch", { selected_language: lang });
+        html.lang = lang === "zh" ? "zh-CN" : "en";
+        document.title = lang === "zh" ? "颗秒 OneTap - CS2 Desktop Assistant" : "OneTap - CS2 Desktop Assistant";
+        localStorage.setItem("onetap-lang", lang);
+        track("language_change", { lang });
       }
 
-      document.querySelectorAll("[data-lang]").forEach((button) => {
-        button.addEventListener("click", () => setLanguage(button.dataset.lang));
+      langButtons.forEach((button) => {
+        button.addEventListener("click", () => setLanguage(button.getAttribute("data-lang")));
       });
 
-      document.addEventListener("click", (event) => {
-        const target = event.target.closest("[data-track]");
-        if (!target) return;
-        track(target.getAttribute("data-track"), {
-          text: target.textContent.trim().slice(0, 80),
-          href: target.getAttribute("href") || "",
+      document.querySelectorAll("[data-track]").forEach((node) => {
+        node.addEventListener("click", () => {
+          track("site_interaction", {
+            action: node.getAttribute("data-track"),
+            label: node.textContent.trim(),
+          });
         });
       });
 
-      setLanguage("zh", false);
-      track("page_view");
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.14 },
+      );
+
+      document.querySelectorAll(".reveal").forEach((node) => observer.observe(node));
+      setLanguage(initialLang);
+      track("official_site_view", { lang: initialLang });
     </script>
   </body>
 </html>
