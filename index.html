@@ -289,6 +289,13 @@
         line-height: 0.86;
         font-weight: 950;
         text-transform: uppercase;
+        overflow-wrap: normal;
+        white-space: nowrap;
+        word-break: normal;
+      }
+
+      html[lang="en"] h1 {
+        font-size: clamp(58px, 8vw, 118px);
       }
 
       h2 {
@@ -1330,6 +1337,10 @@
           font-size: clamp(52px, 19vw, 78px);
         }
 
+        html[lang="en"] h1 {
+          font-size: clamp(48px, 14vw, 68px);
+        }
+
         .lead {
           font-size: 16px;
           line-height: 1.62;
@@ -2159,7 +2170,8 @@
       const logoNodes = document.querySelectorAll("[data-brand-logo]");
       const langButtons = document.querySelectorAll("[data-lang]");
       const translateNodes = document.querySelectorAll("[data-i18n]");
-      const initialLang = localStorage.getItem("onetap-lang") || "zh";
+      const queryLang = new URLSearchParams(window.location.search).get("lang");
+      const initialLang = i18n[queryLang] ? queryLang : localStorage.getItem("onetap-lang") || "zh";
 
       window.dataLayer = window.dataLayer || [];
 
