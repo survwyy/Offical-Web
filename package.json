@@ -1,0 +1,24 @@
+{
+  "name": "onetap-official-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static official website for OneTap / 颗秒.",
+  "scripts": {
+    "optimize:images": "node scripts/optimize-images.mjs",
+    "setup:browsers": "playwright install chromium",
+    "validate": "npm run validate:static && npm run validate:data && npm run validate:format && npm run validate:unit && npm run validate:assets && npm run validate:browser",
+    "validate:assets": "node scripts/validate-assets.mjs",
+    "validate:browser": "node scripts/validate-browser.mjs",
+    "validate:data": "node scripts/validate-section-data.mjs",
+    "validate:format": "node scripts/validate-format.mjs",
+    "validate:unit": "node --test scripts/*.test.mjs",
+    "validate:static": "node scripts/validate-site.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1",
+    "sharp": "^0.34.5"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

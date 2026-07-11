@@ -1,7 +1,7 @@
 (function (global) {
   const brandLogo = {
-    zh: "assets/brand-onetap-zh.png",
-    en: "assets/brand-onetap-en.png",
+    zh: "assets/brand-onetap-zh.webp",
+    en: "assets/brand-onetap-en.webp",
   };
 
   let currentLanguage = "zh";
@@ -26,7 +26,7 @@
     });
     logoNodes.forEach((node) => {
       node.src = brandLogo[lang];
-      node.alt = lang === "zh" ? "?? OneTap" : "OneTap";
+      node.alt = lang === "zh" ? "颗秒 OneTap" : "OneTap";
     });
     langButtons.forEach((button) => {
       button.classList.toggle("is-active", button.getAttribute("data-lang") === lang);
@@ -34,7 +34,7 @@
 
     currentLanguage = translations[lang] ? lang : "zh";
     document.documentElement.lang = currentLanguage === "zh" ? "zh-CN" : "en";
-    document.title = currentLanguage === "zh" ? "?? OneTap - CS2 Desktop Assistant" : "OneTap - CS2 Desktop Assistant";
+    document.title = currentLanguage === "zh" ? "颗秒 OneTap - CS2 Desktop Assistant" : "OneTap - CS2 Desktop Assistant";
     global.localStorage.setItem("onetap-lang", currentLanguage);
     track("language_change", { lang: currentLanguage });
   }

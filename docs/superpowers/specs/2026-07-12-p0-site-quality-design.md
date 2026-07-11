@@ -65,4 +65,3 @@ The validation command fails on missing assets, translation gaps, render count c
 - referenced raster assets meet the size budgets
 - CI workflow calls the same validation command used locally
 - no production page imports npm packages
-

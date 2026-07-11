@@ -54,6 +54,8 @@
     row.dataset.contentId = item.id;
     const image = createNode("img");
     image.src = item.image;
+    image.width = item.width;
+    image.height = item.height;
     image.alt = "";
     image.loading = "lazy";
     image.decoding = "async";

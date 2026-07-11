@@ -1,3 +1,4 @@
 _server.*.log
 _verify-*.png
 .worktrees/
+node_modules/

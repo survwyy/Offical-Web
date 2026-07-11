@@ -16,7 +16,7 @@ Current screenshots are product UI captures used to communicate the desktop assi
 - match history and highlight generation
 - map detail and AI coaching context
 
-The current site keeps these source screenshots in `assets/` and applies browser-level loading controls.
+The site serves WebP derivatives from `assets/` and keeps source PNG files only as inputs for the reproducible optimization command.
 
 ## Loading Rules
 
@@ -24,17 +24,23 @@ The current site keeps these source screenshots in `assets/` and applies browser
 - Critical hero product screenshots use `fetchpriority="high"`.
 - Below-the-fold screenshots use `loading="lazy"` and `decoding="async"`.
 - Dynamically rendered queue thumbnails must set `image.loading = "lazy"`.
+- Every content image must declare intrinsic width and height.
 
 ## Compression Rules
 
-Before production launch, replace raw captures with optimized variants:
+Generate delivery assets with:
 
-- export large screenshots as WebP or AVIF when hosting supports it
-- keep PNG only when alpha or exact UI fidelity is required
-- target 1600px maximum width for full-width screenshots
-- target 900px maximum width for card and floating panel screenshots
-- keep each below-the-fold screenshot under 300 KB where possible
-- keep the social preview image under 600 KB where possible
+```powershell
+npm run optimize:images
+```
+
+The optimizer applies these production rules:
+
+- export screenshots as WebP at 1600px maximum width
+- export brand artwork as WebP at 512px maximum width
+- keep every referenced raster asset under 700 KB
+- keep all referenced raster assets under 4 MB combined
+- retain PNG files only as local optimization inputs until source storage is externalized
 
 ## Naming Rules
 
@@ -58,6 +64,7 @@ Run these commands before release:
 ```powershell
 node scripts/validate-site.mjs
 node scripts/validate-section-data.mjs
+npm run validate:browser
 git diff --check
 ```
 

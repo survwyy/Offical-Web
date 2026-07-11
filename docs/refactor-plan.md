@@ -213,3 +213,22 @@ The refactor is complete when:
 - validation command passes
 - mobile/tablet desktop screenshots are checked
 - repository is clean after commit
+
+## 11. Phase 4: Automated Quality Gates
+
+Status: implemented on 2026-07-12.
+
+Delivered:
+
+- npm scripts for a single validation entry point
+- GitHub Actions validation on pushes and pull requests
+- WebP delivery assets with enforced per-file and total byte budgets
+- intrinsic dimensions for static and rendered images
+- Playwright checks at 1440px, 768px, 430px, and 390px
+- browser assertions for responsive overflow, language-specific logos, and analytics events
+
+Remaining production work:
+
+- run Lighthouse against the deployed production URL
+- configure the final hosting provider and domain deployment
+- replace the GitHub Releases listing with a versioned installer endpoint when release metadata is available
