@@ -20,8 +20,32 @@ function readTranslations() {
   return sandbox.window.OneTapTranslations;
 }
 
+function readContentData() {
+  const sandbox = { window: {} };
+  ["src/data/metrics.js", "src/data/sections.js"].forEach((ref) => {
+    const filePath = path.join(root, ref);
+    if (fs.existsSync(filePath)) {
+      vm.runInNewContext(fs.readFileSync(filePath, "utf8"), sandbox, { filename: ref });
+    }
+  });
+  return sandbox.window;
+}
+
 function matchAll(pattern, source) {
   return [...source.matchAll(pattern)].map((match) => match[1]);
+}
+
+function collectByKey(value, keyName, values = []) {
+  if (Array.isArray(value)) {
+    value.forEach((item) => collectByKey(item, keyName, values));
+    return values;
+  }
+  if (!value || typeof value !== "object") return values;
+  Object.entries(value).forEach(([key, itemValue]) => {
+    if (key === keyName || key.endsWith(keyName)) values.push(itemValue);
+    collectByKey(itemValue, keyName, values);
+  });
+  return values;
 }
 
 function assertExistingRelativeFiles(label, refs) {
@@ -43,7 +67,12 @@ assertExistingRelativeFiles("Stylesheet", styleRefs);
 assertExistingRelativeFiles("Script", scriptRefs);
 
 const translations = readTranslations();
-const i18nKeys = [...new Set(matchAll(/data-i18n="([^"]+)"/g, html))];
+const contentData = readContentData();
+const dataI18nKeys = collectByKey(contentData, "Key");
+const dataImageRefs = collectByKey(contentData, "image");
+assertExistingRelativeFiles("Data image", dataImageRefs);
+
+const i18nKeys = [...new Set([...matchAll(/data-i18n="([^"]+)"/g, html), ...dataI18nKeys])];
 const missingZh = i18nKeys.filter((key) => !translations.zh?.[key]);
 const missingEn = i18nKeys.filter((key) => !translations.en?.[key]);
 
@@ -81,6 +110,7 @@ const checkedFiles = [
   ...scriptRefs,
   "src/data/translations.js",
   "scripts/validate-site.mjs",
+  "scripts/validate-section-data.mjs",
 ];
 
 checkedFiles.forEach((ref) => {

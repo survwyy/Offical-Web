@@ -77,6 +77,7 @@ Target files:
 src/data/metrics.js
 src/data/sections.js
 src/scripts/render-sections.js
+scripts/validate-section-data.mjs
 ```
 
 Steps:
@@ -85,6 +86,7 @@ Steps:
 2. Extract proof rail item definitions.
 3. Extract repeated module card definitions where appropriate.
 4. Render repeated cards from stable data ids.
+5. Validate data ids, translation keys, and render output counts.
 
 Acceptance:
 
@@ -92,6 +94,7 @@ Acceptance:
 - repeated markup is not duplicated manually
 - translation keys still resolve in both languages
 - no section content is hidden from accessibility tree
+- `node scripts/validate-section-data.mjs` passes
 
 ## 5. Phase 3: Production Hardening
 
@@ -122,6 +125,7 @@ Static validation:
 
 ```powershell
 node scripts/validate-site.mjs
+node scripts/validate-section-data.mjs
 git diff --check
 ```
 

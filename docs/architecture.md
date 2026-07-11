@@ -51,6 +51,7 @@ Offical-Web/
       analytics.js
       i18n.js
       main.js
+      render-sections.js
       validators.js
     styles/
       tokens.css
@@ -65,6 +66,7 @@ Offical-Web/
       responsive-mobile.css
   scripts/
     validate-site.mjs
+    validate-section-data.mjs
 ```
 
 If the site later moves to TypeScript or a bundler, preserve these boundaries:
@@ -171,12 +173,23 @@ Responsibility:
 ### `src/scripts/main.js`
 Responsibility:
 - entry point
-- wire i18n, analytics, and reveal behavior
+- wire section rendering, i18n, analytics, and reveal behavior
 
 Must not contain:
 - large dictionaries
 - copied CSS logic
 - section content data
+
+### `src/scripts/render-sections.js`
+Responsibility:
+- render repeated landing page cards from `src/data/*.js`
+- keep stable `data-content-id` values on generated content
+- preserve existing class names and semantic element types
+
+Must not contain:
+- translation dictionaries
+- analytics behavior
+- image or copy data that belongs in `src/data/*.js`
 
 ### `scripts/validate-site.mjs`
 Responsibility:
@@ -262,6 +275,7 @@ Minimum validation:
 
 ```powershell
 node scripts/validate-site.mjs
+node scripts/validate-section-data.mjs
 git diff --check
 ```
 

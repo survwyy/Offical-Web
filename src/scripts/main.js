@@ -2,6 +2,7 @@
   const { track, bindTrackedElements } = global.OneTapAnalytics;
   const { initI18n } = global.OneTapI18n;
   const { warnIfInvalid } = global.OneTapValidators;
+  const { renderSections } = global.OneTapRender;
 
   function initRevealObserver() {
     const observer = new IntersectionObserver(
@@ -19,6 +20,7 @@
   }
 
   function init() {
+    renderSections();
     warnIfInvalid();
     const lang = initI18n({ translations: global.OneTapTranslations, track });
     bindTrackedElements(document);
