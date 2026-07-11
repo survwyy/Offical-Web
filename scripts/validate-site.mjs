@@ -58,13 +58,33 @@ function assertExistingRelativeFiles(label, refs) {
   });
 }
 
+function assertFileExists(ref) {
+  if (!fs.existsSync(path.join(root, ref))) fail(`Required file is missing: ${ref}`);
+}
+
+function assertHtmlIncludes(label, snippets) {
+  snippets.forEach((snippet) => {
+    if (!html.includes(snippet)) fail(`${label} is missing: ${snippet}`);
+  });
+}
+
+function assertLazyImages() {
+  const imageTags = [...html.matchAll(/<img\b[^>]*>/g)].map((match) => match[0]);
+  imageTags.forEach((tag) => {
+    if (tag.includes("data-critical-image")) return;
+    if (!tag.includes('loading="lazy"')) fail(`Image is missing lazy loading: ${tag}`);
+  });
+}
+
 const imageRefs = matchAll(/<img[^>]+src="([^"]+)"/g, html);
 const styleRefs = matchAll(/<link[^>]+href="([^"]+\.css)"/g, html);
 const scriptRefs = matchAll(/<script[^>]+src="([^"]+\.js)"/g, html);
+const localHrefRefs = matchAll(/<(?:a|link)[^>]+href="([^"]+)"/g, html);
 
 assertExistingRelativeFiles("Image", imageRefs);
 assertExistingRelativeFiles("Stylesheet", styleRefs);
 assertExistingRelativeFiles("Script", scriptRefs);
+assertExistingRelativeFiles("Linked file", localHrefRefs);
 
 const translations = readTranslations();
 const contentData = readContentData();
@@ -104,6 +124,38 @@ requiredTracks.forEach((track) => {
   if (!html.includes(`data-track="${track}"`)) fail(`Required data-track is missing: ${track}`);
 });
 
+[
+  "assets/favicon.svg",
+  "docs/asset-strategy.md",
+  "privacy.html",
+  "terms.html",
+  "robots.txt",
+  "sitemap.xml",
+  "site.webmanifest",
+].forEach(assertFileExists);
+
+assertHtmlIncludes("Production metadata", [
+  'name="robots" content="index, follow"',
+  'name="theme-color"',
+  'property="og:type" content="website"',
+  'property="og:title"',
+  'property="og:description"',
+  'property="og:image"',
+  'name="twitter:card" content="summary_large_image"',
+  '<link rel="canonical" href="https://onetap.cool/"',
+  '<link rel="icon" type="image/svg+xml" href="assets/favicon.svg"',
+  '<link rel="manifest" href="site.webmanifest"',
+  'href="privacy.html"',
+  'href="terms.html"',
+]);
+
+assertLazyImages();
+
+const renderScript = fs.readFileSync(path.join(root, "src/scripts/render-sections.js"), "utf8");
+if (!renderScript.includes('image.loading = "lazy"')) {
+  fail("Rendered queue images must set loading=\"lazy\"");
+}
+
 const checkedFiles = [
   "index.html",
   ...styleRefs,
@@ -111,10 +163,15 @@ const checkedFiles = [
   "src/data/translations.js",
   "scripts/validate-site.mjs",
   "scripts/validate-section-data.mjs",
+  "docs/asset-strategy.md",
+  "privacy.html",
+  "terms.html",
 ];
 
 checkedFiles.forEach((ref) => {
-  const lines = fs.readFileSync(path.join(root, ref), "utf8").split(/\r?\n/).length;
+  const filePath = path.join(root, ref);
+  if (!fs.existsSync(filePath)) return;
+  const lines = fs.readFileSync(filePath, "utf8").split(/\r?\n/).length;
   if (lines > 300) fail(`File exceeds 300 lines: ${ref} (${lines})`);
 });
 

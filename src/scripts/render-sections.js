@@ -55,6 +55,8 @@
     const image = createNode("img");
     image.src = item.image;
     image.alt = "";
+    image.loading = "lazy";
+    image.decoding = "async";
     const text = createNode("div");
     const title = createNode("strong");
     const meta = createNode("span");

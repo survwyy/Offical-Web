@@ -111,6 +111,8 @@
       "download.supportCopy": "商务合作、问题反馈、下载支持和媒体素材请求都可以通过该邮箱联系。",
       "footer.left": "© 2026 OneTap / 颗秒. All rights reserved.",
       "footer.right": "CS2 demo review · pro setup · highlight studio",
+      "footer.privacy": "隐私政策",
+      "footer.terms": "服务条款",
     },
     en: {
       "brand.name": "OneTap",
@@ -223,6 +225,8 @@
       "download.supportCopy": "Business, feedback, download support and media requests can all be sent to this mailbox.",
       "footer.left": "© 2026 OneTap / 颗秒. All rights reserved.",
       "footer.right": "CS2 demo review · pro setup · highlight studio",
+      "footer.privacy": "Privacy",
+      "footer.terms": "Terms",
     },
   };
   global.OneTapTranslations = translations;

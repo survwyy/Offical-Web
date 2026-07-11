@@ -41,7 +41,13 @@ Offical-Web/
   assets/
   docs/
     architecture.md
+    asset-strategy.md
     refactor-plan.md
+  privacy.html
+  terms.html
+  robots.txt
+  sitemap.xml
+  site.webmanifest
   src/
     data/
       translations.js
@@ -269,6 +275,13 @@ assets/<file>
 ```
 
 Committed code must not contain local absolute asset paths.
+
+Production static files:
+- `robots.txt`: crawler access and sitemap pointer
+- `sitemap.xml`: public URL discovery
+- `site.webmanifest`: install metadata and app icon reference
+- `privacy.html`: privacy and support expectations
+- `terms.html`: website and download terms
 
 ## 8. Testing Boundary
 Minimum validation:

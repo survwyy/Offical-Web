@@ -112,12 +112,26 @@ Tasks:
 - define final download endpoint
 - run Lighthouse performance checks
 
+Target files:
+
+```text
+assets/favicon.svg
+docs/asset-strategy.md
+privacy.html
+terms.html
+robots.txt
+sitemap.xml
+site.webmanifest
+```
+
 Acceptance:
 
 - Lighthouse mobile performance is reviewed
-- key images are optimized
+- key image loading behavior is validated
+- raw image replacement rules are documented in `docs/asset-strategy.md`
 - SEO preview metadata is present
 - legal and support links are present if required
+- crawler files and web app manifest are present
 
 ## 6. Validation Commands
 

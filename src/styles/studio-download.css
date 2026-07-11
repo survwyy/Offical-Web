@@ -184,6 +184,22 @@ footer .wrap {
   padding-top: 22px;
 }
 
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.footer-links a {
+  color: var(--muted);
+  font-weight: 850;
+}
+
+.footer-links a:hover,
+.footer-links a:focus-visible {
+  color: var(--ink);
+}
+
 .reveal {
   opacity: 1;
   transform: translateY(0);
