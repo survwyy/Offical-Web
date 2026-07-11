@@ -57,8 +57,12 @@ Offical-Web/
       base.css
       layout.css
       hero.css
-      sections.css
-      responsive.css
+      hero-stage.css
+      proof-command.css
+      intel-compare.css
+      studio-download.css
+      responsive-tablet.css
+      responsive-mobile.css
   scripts/
     validate-site.mjs
 ```
@@ -101,8 +105,12 @@ Files:
 - `base.css`: reset, body, base elements
 - `layout.css`: navigation, wrappers, grids, sections
 - `hero.css`: hero and HUD product stage
-- `sections.css`: feature sections, download, footer
-- `responsive.css`: tablet and mobile breakpoints
+- `hero-stage.css`: floating HUD product windows
+- `proof-command.css`: proof rail and command center
+- `intel-compare.css`: pro intelligence and comparison sections
+- `studio-download.css`: studio, coach, download, and footer
+- `responsive-tablet.css`: tablet breakpoints
+- `responsive-mobile.css`: mobile breakpoints
 
 ### `src/data/*.js`
 Responsibility:
@@ -123,12 +131,10 @@ Responsibility:
 - switch brand icons
 - persist language to `localStorage`
 
-Public interface:
+Browser namespace:
 
 ```js
-export function initI18n(options) {}
-export function setLanguage(lang) {}
-export function getLanguage() {}
+window.OneTapI18n = { initI18n, setLanguage, getLanguage };
 ```
 
 ### `src/scripts/analytics.js`
@@ -137,11 +143,10 @@ Responsibility:
 - push events to `window.dataLayer`
 - bind `[data-track]` elements
 
-Public interface:
+Browser namespace:
 
 ```js
-export function track(eventName, payload = {}) {}
-export function bindTrackedElements(root = document) {}
+window.OneTapAnalytics = { track, bindTrackedElements };
 ```
 
 Event shape:

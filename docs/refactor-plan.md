@@ -30,12 +30,17 @@ src/styles/tokens.css
 src/styles/base.css
 src/styles/layout.css
 src/styles/hero.css
-src/styles/sections.css
-src/styles/responsive.css
+src/styles/hero-stage.css
+src/styles/proof-command.css
+src/styles/intel-compare.css
+src/styles/studio-download.css
+src/styles/responsive-tablet.css
+src/styles/responsive-mobile.css
 src/data/translations.js
 src/scripts/analytics.js
 src/scripts/i18n.js
 src/scripts/main.js
+src/scripts/validators.js
 scripts/validate-site.mjs
 ```
 
