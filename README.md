@@ -1,6 +1,6 @@
 # OneTap Official Website
 
-Static official website prototype for OneTap / 颗秒, a CS2 desktop assistant.
+Static official website for OneTap / 颗秒, a CS2 desktop assistant.
 
 ## Preview
 
@@ -23,3 +23,8 @@ http://127.0.0.1:4177/
 - CS2 demo review, personal skins and peripherals, pro player comparison, AI coach, and highlight generation sections
 - Download and contact CTAs
 - Basic analytics events via `window.dataLayer`
+
+## Engineering Docs
+
+- [Architecture](docs/architecture.md)
+- [Refactor plan](docs/refactor-plan.md)
